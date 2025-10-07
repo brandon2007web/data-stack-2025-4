@@ -81,7 +81,7 @@ $rol_nombre = $_SESSION['rol_nombre'] ?? 'Desconocido';
       <br><br>
       <h3>Menú Admin</h3>
       <a href="horarios/horarios.php">📊 Horarios</a>
-      <a href="/Data_Stack/panel/index.php" style="color:blue;">Panel Admin</a>
+      <a href="panel/index.php" style="color:blue;">Panel Admin</a>
       <a href="#">⚙️ Configuración</a>
     </div>
     <div class="overlay" id="overlay"></div>
