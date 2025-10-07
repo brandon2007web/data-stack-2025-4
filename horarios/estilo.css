@@ -1,0 +1,187 @@
+     
+     body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            color: #333;
+            margin: 0; /* Asegura que no haya márgenes no deseados */
+        }
+
+
+        .container {
+            text-align: center;
+            max-width: 1100px;
+            width: 100%;
+            margin: 80px auto 100px auto; 
+        }
+
+
+        /* Títulos */
+        h1 {
+            font-size: 26px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        /* Estilo de la tabla de horario */
+        .horario-table {
+            border-collapse: collapse;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            margin: 25px auto; /* Centrar tabla y margen */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .horario-table th, .horario-table td {
+            border: 1px solid #ddd;
+            padding: 10px 5px; /* Ajuste para mejor visualización en móvil */
+            vertical-align: middle;
+            height: 50px; /* Altura uniforme para las celdas */
+        }
+
+        .horario-table th {
+            background: #34495e;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .horario-table td {
+            background: #fff;
+            transition: background 0.3s;
+            max-width: 150px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .horario-table td:hover {
+            background: #f1f9ff;
+        }
+        
+        /* Estilo para la columna de horas */
+        .hora-header {
+            width: 90px;
+            font-weight: bold;
+            background: #f8f9fa;
+            color: #555;
+            position: sticky; /* Fija la columna de la hora si es necesario (navegación horizontal) */
+            left: 0;
+            z-index: 10;
+        }
+
+        /* Estilos para celdas de "Libre" */
+        .vacio { 
+            background-color: #ecf0f1; 
+            color: #aaa; 
+            font-style: italic;
+        }
+        
+        .titulo-grupo { 
+            margin-top: 30px; 
+            font-size: 22px; 
+            color: #34495e; 
+        }
+
+        /* === Estilo del Formulario de Selección (Adoptando estilos de .formulario) === */
+        
+        .select-form-wrapper {
+            /* Contenedor que centra la caja del formulario */
+            text-align: center; 
+            margin-top: 25px; 
+            width: 100%;
+        }
+        
+        .select-form {
+            /* Adaptamos la clase .formulario para el selector */
+            display: inline-block; 
+            padding: 18px;
+            border: 1px solid #ddd;
+            background: #fff;
+            border-radius: 8px;
+            width: 100%; /* Ocupa todo el ancho en móvil */
+            max-width: 400px; /* Máximo ancho en escritorio */
+            text-align: left; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+            margin: 0 auto; 
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .select-form:hover {
+            transform: translateY(-3px);
+        }
+
+        .select-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .select-form select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            transition: border 0.3s;
+            appearance: none; /* Eliminar estilo nativo en algunos navegadores */
+            background-color: #fff;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%233498db%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13.2-5.4H18.6c-5%200-9.3%201.8-13.2%205.4A17.6%2017.6%200%200%200%200%2082.6c0%204.8%201.8%209.1%205.4%2013.2l128%20128c3.9%203.9%208.2%205.8%2013.2%205.8s9.3-1.9%2013.2-5.8l128-128c3.9-3.9%205.8-8.2%205.8-13.2%200-5-1.9-9.3-5.8-13.2z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px top 50%;
+            background-size: 12px auto;
+        }
+
+        .select-form select:focus {
+            border: 1px solid #3498db;
+            box-shadow: 0 0 4px rgba(52,152,219,0.3);
+        }
+
+        .select-form button {
+            margin-top: 5px;
+            padding: 10px 20px;
+            background: #3498db;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 6px; 
+            font-size: 15px;
+            font-weight: bold;
+            transition: background 0.3s, transform 0.2s;
+            width: 100%; 
+        }
+
+        .select-form button:hover {
+            background: #2980b9;
+            transform: scale(1.0); /* Mantenemos el tamaño, ya que ya tiene hover en el contenedor */
+        }
+        
+        /* Ajuste responsive para la tabla */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            /* Hacemos la tabla responsive */
+            .horario-table {
+                display: block;
+                overflow-x: auto; /* Permite desplazamiento horizontal en pantallas pequeñas */
+                white-space: nowrap; /* Evita que los días se envuelvan */
+            }
+            .horario-table th, .horario-table td {
+                padding: 8px 6px;
+                font-size: 12px;
+            }
+            .select-form {
+                max-width: 95%;
+            }
+        }

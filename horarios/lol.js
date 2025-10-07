@@ -6,8 +6,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const materiaSelect = document.getElementById("materia");
     const diaSelect = document.getElementById("dia");
     const bloqueSelect = document.getElementById("bloque");
+    const nombreInput = document.getElementById("nombreHorario");
 
-    // --- Carga de Materias al cambiar grupo (Sin cambios) ---
+    // --- Cargar materias según grupo ---
     grupoSelect.addEventListener("change", function () {
         const grupoId = this.value;
         materiaSelect.innerHTML = "<option value=''>Cargando...</option>";
@@ -17,156 +18,163 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        fetch("get_materias.php?id_grupo=" + encodeURIComponent(grupoId)) 
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error('Error de red o archivo PHP fallido: Código ' + res.status);
-                }
-                return res.json();
-            })
+        // 🚨 Asegúrate de que esta URL sea la correcta para tu archivo get_materias.php
+        fetch("get_materias.php?id_grupo=" + encodeURIComponent(grupoId))
+            .then(res => res.json())
             .then(data => {
-                const materiasArray = data.ok && Array.isArray(data.materias) ? data.materias : [];
-
+                const materias = data.ok ? data.materias : [];
                 materiaSelect.innerHTML = "<option value=''>-- Seleccione --</option>";
-                
-                if (materiasArray.length === 0) {
-                    materiaSelect.innerHTML = "<option value=''>No hay materias o el grupo no tiene curso asignado</option>";
+
+                if (materias.length === 0) {
+                    materiaSelect.innerHTML = "<option value=''>No hay materias disponibles</option>";
                     return;
                 }
-                
-                materiasArray.forEach(m => {
+
+                materias.forEach(m => {
                     const option = document.createElement("option");
-                    option.value = m.id; 
+                    option.value = m.id;
                     option.textContent = m.nombre;
                     materiaSelect.appendChild(option);
                 });
             })
             .catch(err => {
                 console.error("Error al traer materias:", err);
-                materiaSelect.innerHTML = `<option value=''>Error al cargar: ${err.message || 'Respuesta inválida'}</option>`;
+                materiaSelect.innerHTML = "<option value=''>Error al cargar materias</option>";
             });
     });
 
-    // --- EVENTO CLAVE: Doble Clic para Borrar Contenido de la Celda ---
-    function setupDeleteOnDoubleClick() {
-        // Seleccionamos todas las celdas que potencialmente pueden tener una materia asignada
-        const celdasMateria = tabla.querySelectorAll("td[data-dia][data-hora]");
-        
-        celdasMateria.forEach(celda => {
-            celda.addEventListener('dblclick', function() {
-                // Solo borrar si la celda tiene una materia y un grupo asignado (es decir, fue llenada)
-                if (this.hasAttribute('data-materia')) {
-                    const confirmDelete = confirm("¿Estás seguro de que quieres eliminar esta materia de la celda?");
-                    
-                    if (confirmDelete) {
-                        this.textContent = ""; // Borra el texto visible
-                        this.style.backgroundColor = ""; // Restaura el color de fondo
-                        
-                        // Elimina los atributos de la materia y grupo para que no se guarden
-                        this.removeAttribute('data-materia');
-                        this.removeAttribute('data-grupo');
-                        
-                        console.log("Materia borrada de la celda:", {
-                            dia: this.getAttribute('data-dia'),
-                            hora: this.getAttribute('data-hora')
-                        });
-
-                        // Muestra el botón de guardar para que el usuario pueda persistir el cambio
-                        guardarBtn.style.display = "inline-block";
-                    }
+    // --- Doble clic para borrar celda ---
+    tabla.querySelectorAll("td[data-dia][data-hora]").forEach(celda => {
+        celda.addEventListener("dblclick", function () {
+            if (this.hasAttribute("data-materia")) {
+                if (confirm("¿Eliminar esta materia de la celda?")) {
+                    this.textContent = "";
+                    this.style.backgroundColor = "";
+                    this.removeAttribute("data-materia");
+                    this.removeAttribute("data-grupo");
+                    this.removeAttribute("data-dia"); // Limpiar todos los atributos data
+                    this.removeAttribute("data-hora");
+                    guardarBtn.style.display = "inline-block";
                 }
-            });
+            }
         });
-        console.log("Funcionalidad de doble clic activada.");
-    }
+    });
 
-    // Llamar a la función al inicio para aplicar el evento a todas las celdas
-    setupDeleteOnDoubleClick();
-    // --- FIN EVENTO DOBLE CLIC ---
-    
-    // --- evento AGREGAR: encuentra la celda y escribe (Sin cambios) ---
+    // --- Agregar materia a la celda ---
     agregarBtn.addEventListener("click", function () {
         const grupo = grupoSelect.value;
         const materia = materiaSelect.value;
         const materiaNombre = materiaSelect.options[materiaSelect.selectedIndex]?.text || "";
-        const dia = Number(diaSelect.value); // 1..5
-        
-        const idHoraBD = Number(bloqueSelect.value); 
-        const indiceFila = bloqueSelect.selectedIndex + 1; 
+        const dia = Number(diaSelect.value);
+        const idHoraBD = Number(bloqueSelect.value);
+        const indiceFila = bloqueSelect.selectedIndex + 1; // Ajuste si la tabla tiene cabecera y el select no
 
         if (!grupo || !materia || !dia || !idHoraBD) {
-            alert("Complete todos los campos (grupo, dia, hora, materia).");
+            alert("Complete todos los campos de selección (grupo, día, hora, materia).");
             return;
         }
 
-        console.log(`Intentando colocar materia: ID_BD=${idHoraBD}, Día=${dia}, Índice de Fila=${indiceFila}`);
-
-        let celda = tabla.querySelector(`td[data-dia="${dia}"][data-indice-fila="${indiceFila}"]`);
+        // Usa el atributo data-hora directamente para la selección de la celda
+        const celda = tabla.querySelector(`td[data-dia="${dia}"][data-hora="${idHoraBD}"]`);
         
         if (!celda) {
-            console.error(`No se encontró celda para data-dia=${dia} y data-indice-fila=${indiceFila}.`);
-            alert("No se encontró la celda. Verifica que 'horarios.php' esté generando correctamente 'data-indice-fila'.");
+            alert(`No se encontró la celda correspondiente para Día: ${dia} y Hora ID: ${idHoraBD}.`);
             return;
         }
 
-        // ESCRIBIR en la celda
-        celda.textContent = materiaNombre;
-        celda.setAttribute("data-materia", String(materia)); 
-        celda.setAttribute("data-grupo", String(grupo));
-        celda.setAttribute("data-dia", String(dia));
-        celda.setAttribute("data-hora", String(idHoraBD)); 
-        celda.style.backgroundColor = "#d0f0d0"; // visual
+        // 🚨 DEBUG: Muestra que la materia se intenta colocar
+        console.log(`Intentando colocar materia: Grupo=${grupo}, Materia=${materia}, Día=${dia}, Hora=${idHoraBD}`);
 
+
+        celda.textContent = materiaNombre;
+        celda.setAttribute("data-materia", materia);
+        celda.setAttribute("data-grupo", grupo);
+        // Aunque ya están, las reescribimos para consistencia
+        celda.setAttribute("data-dia", dia);
+        celda.setAttribute("data-hora", idHoraBD);
+        celda.style.backgroundColor = "#d0f0d0";
+
+        // 🚨 DEBUG: Muestra los atributos de la celda colocada
         console.log("Materia colocada en celda:", {
-            celda,
+            celda: celda, 
             attrs: {
-                dia: celda.getAttribute("data-dia"),
-                hora: celda.getAttribute("data-hora"), 
-                materia: celda.getAttribute("data-materia"),
-                grupo: celda.getAttribute("data-grupo"),
-                indiceFila: celda.getAttribute("data-indice-fila")
+                dia: celda.dataset.dia, 
+                hora: celda.dataset.hora, 
+                materia: celda.dataset.materia, 
+                grupo: celda.dataset.grupo
             }
         });
 
         guardarBtn.style.display = "inline-block";
     });
 
-    // --- evento GUARDAR: toma todas las celdas con data-materia (Sin cambios) ---
-    guardarBtn.addEventListener("click", function () {
-        const celdas = tabla.querySelectorAll("td[data-materia][data-dia][data-hora][data-grupo]");
-        const datos = [];
+    // --- Guardar horario ---
+    guardarBtn.addEventListener("click", () => {
+        const nombreHorario = nombreInput.value.trim();
+        let grupoID = parseInt(grupoSelect.value); // Usamos 'let' para poder reasignar
 
-        celdas.forEach(celda => {
-            const horaParaGuardar = Number(celda.getAttribute("data-hora")); 
-            
-            datos.push({
-                grupo: Number(celda.getAttribute("data-grupo")),
-                materia: Number(celda.getAttribute("data-materia")),
-                dia: Number(celda.getAttribute("data-dia")),
-                hora: horaParaGuardar
+        // Construye el array de datos del horario
+        const datosHorario = [];
+        tabla.querySelectorAll("td[data-materia][data-dia][data-hora][data-grupo]").forEach(celda => {
+            datosHorario.push({
+                dia: parseInt(celda.dataset.dia),
+                hora: parseInt(celda.dataset.hora),
+                materia: parseInt(celda.dataset.materia),
+                grupo: parseInt(celda.dataset.grupo) // Ya tienes el grupo correcto de la celda
             });
         });
 
-        if (datos.length === 0) {
-            alert("No hay nada para guardar.");
+        // 💡 RESPALDO: Si grupoID es 0 (o NaN) Y hay datos, usa el grupo del primer bloque como respaldo.
+        // Esto soluciona el error de grupoID:0 si el select no estaba seleccionado al guardar.
+        if ((!grupoID || isNaN(grupoID)) && datosHorario.length > 0) {
+            grupoID = datosHorario[0].grupo;
+        }
+
+        // 🚨 Validación Estricta: Si alguno falta, la alerta previene el envío
+        if (!nombreHorario) {
+            alert("Debe ingresar un nombre para el horario.");
+            return;
+        }
+        if (!grupoID || grupoID === 0 || isNaN(grupoID)) {
+             alert("El grupo principal del horario es inválido. Asegúrese de que haya un grupo seleccionado.");
+            return;
+        }
+        if (datosHorario.length === 0) {
+            alert("Debe agregar al menos un bloque de materia al horario antes de guardar.");
             return;
         }
 
-        console.log("Enviando al servidor estos items:", datos);
+        // 🚨 DEBUG FINAL: Muestra los datos que se enviarán
+        console.log("------------------------------------------");
+        console.log(`ENVIANDO | Nombre: ${nombreHorario}, GrupoID: ${grupoID}, Items: ${datosHorario.length}`);
+        console.log("Datos Horario a enviar:", datosHorario);
+        console.log("------------------------------------------");
 
-        fetch("guardarHorario.php", {
+        // Enviar al servidor
+        fetch("guardarhorario.php", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(datos)
+            body: JSON.stringify({
+                nombre: nombreHorario,
+                grupoID: grupoID,
+                datos: datosHorario
+            })
         })
-        .then(res => res.text())
-        .then(msg => {
-            alert("Respuesta servidor: " + msg);
-            guardarBtn.style.display = "none";
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "success") {
+                alert(data.message);
+                // Opcional: recargar o limpiar el formulario
+                // location.reload(); 
+            } else {
+                alert("⚠️ Error al guardar: " + data.message);
+                // Muestra la respuesta del servidor con los valores que recibió
+                console.error("Respuesta de Error del Servidor:", data); 
+            }
         })
         .catch(err => {
-            console.error("Error guardando:", err);
-            alert("Error al guardar, ver consola.");
+            console.error("Error en fetch (red o servidor no responde):", err);
+            alert("Ocurrió un error de red o el servidor no respondió.");
         });
     });
 });

@@ -19,7 +19,7 @@ if (session_status() == PHP_SESSION_NONE) {
         </div>
         <nav>
             <ul>
-                <li><a href="http://localhost/Data_Stack/panel/index.php">Inicio</a></li>
+                <li><a href="http://localhost/Data_Stack-2025/panel/index.php">Inicio</a></li>
                 <li><a href="usuarios.php">Usuarios</a></li>
                 <li><a href="views/Crear-Grupos/grupos.php">Grupos</a></li>
                 <li><a href="Crear-Grupos/grupos.php">Cursos</a></li>
@@ -36,6 +36,7 @@ header {
     background-color: #2c3e50;
     padding: 15px 20px;
     color: white;
+    margin:0;
 }
 
 .header-container {

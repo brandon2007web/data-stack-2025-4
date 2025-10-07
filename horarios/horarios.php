@@ -1,5 +1,13 @@
 <?php
+session_start();
 include __DIR__ . "/../conexion.php";
+
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario'] === 'Invitado') {
+    // Redirige a otra página o muestra un mensaje
+    header("Location: bienvenido.php");
+    exit;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -83,7 +91,9 @@ include __DIR__ . "/../conexion.php";
     <h2>Agregar Materia al Horario</h2>
 
     <div class="formulario">
-        
+        <label for="nombreHorario">Nombre del Horario:</label>
+<input type="text" id="nombreHorario" placeholder="Ingrese un nombre">
+       
         <label for="grupo">Grupo:</label>
         <select id="grupo">
             <option value="">-- Seleccione --</option>
