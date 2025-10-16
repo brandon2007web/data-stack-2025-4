@@ -31,6 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { //Aca se comprueba que el formulari
                 $_SESSION['usuario'] = $user['Documento'];//se guarda todo en la variable $_SESSION que es array asociativo de php y se crean los elementos(usuario,rol,nombre) y se les asigna los valores guardados en user. por ejemplo en $_Session se crea un elemento llamado usuario que va a guardar el elemento dentro del array asociativo $user llamado Documento
                 $_SESSION['rol']     = $user['ID_Rol'];
                 $_SESSION['nombre']  = $user['Nombre'];
+                $_SESSION['apellido'] = $user['Apellido'];
+                $_SESSION['correo'] = $user['Correo'];
+                $_SESSION['usuario_id'] = $user['ID_Usuario']; 
+
+
 
                 // Obtener y guardar el nombre del rol en sesión
                 $rolStmt = $conn->prepare("SELECT Nombre_Rol FROM rol WHERE ID_Rol = ?");//se crea una variable rolstmt y eso es igual al 
