@@ -1,7 +1,6 @@
 <?php
-// index.php - Panel de administrador
 
-// Iniciar sesión si tu panel necesita autenticación
+
 session_start();
 include("../conexion.php");
 ?>
@@ -12,11 +11,11 @@ include("../conexion.php");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administrador</title>
-    <link rel="stylesheet" href="css/style.css"> <!-- Tu CSS -->
+    <link rel="stylesheet" href="css/style.css"> 
 </head>
 <body>
 
-    <!-- Incluir header -->
+   
     <?php include("views/header.php"); ?>
 
     <main>
@@ -24,17 +23,16 @@ include("../conexion.php");
             <h1>Bienvenido al Panel de Administrador</h1>
             <p>Desde aquí podrás gestionar tu sistema.</p>
 
-            <!-- Ejemplo de sección de administración -->
+           
             <div class="dashboard-sections">
-                <a href=".php" class="dashboard-card">Cursos</a>
+                <a href="Views/Crear-Cursos/crear-cursos.php" class="dashboard-card">Cursos</a>
                 <a href="views/Crear-Grupos/grupos.php" class="dashboard-card">Grupos</a>
-<<<<<<< HEAD
-                <a href="pedidos.php" class="dashboard-card">Usuarios</a>
-                <a href="views/aulas/index.php" class="dashboard-card">Recursos</a>
-=======
+
                 <a href="Crear-Usuarios.php" class="dashboard-card">Usuarios</a>
-                <a href="pedidos.php" class="dashboard-card">Recursos</a>
->>>>>>> a539bdcb83d560af2178b803f69ef871b12b8bc5
+                <a href="views/aulas/aulas.php" class="dashboard-card">Aulas</a>
+                <a href="views/horarios/horarios.php"class="dashboard-card">Horarios</a>
+
+
             </div>
         </div>
     </main>

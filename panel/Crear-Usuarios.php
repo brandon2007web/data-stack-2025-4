@@ -51,7 +51,7 @@ $nombre = $_SESSION['nombre'] ?? 'Administrador';
                 <h3>Administrador</h3>
                 <p>Usuarios con acceso total a la configuración del sistema, horarios y gestión de otros usuarios. (Rol ID: 1)</p>
                 <!-- Aquí se enlazaría al formulario de creación con el rol preseleccionado (Ejemplo: rol=1) -->
-                <a href="crear-Administrador" class="btn-select">Crear Admin</a>
+                <a href="Crear-Usuarios/crear-administrador.php" class="btn-select">Crear Admin</a>
             </div>
 
             <!-- Bloque 2: Docente -->
@@ -60,7 +60,7 @@ $nombre = $_SESSION['nombre'] ?? 'Administrador';
                 <h3>Docente</h3>
                 <p>Usuarios con permisos limitados a la visualización y edición de sus propios recursos y horarios. (Rol ID: 2)</p>
                 <!-- Aquí se enlazaría al formulario de creación con el rol preseleccionado (Ejemplo: rol=2) -->
-                <a href="Crear-Usuarios/crear-Docente.php" class="btn-select">Crear Docente</a>
+                <a href="Crear-Usuarios/crear-docente.php" class="btn-select">Crear Docente</a>
             </div>
 
         </div>

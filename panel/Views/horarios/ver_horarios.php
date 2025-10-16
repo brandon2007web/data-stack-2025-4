@@ -1,7 +1,7 @@
 <?php
 // Incluye el archivo de conexión a la base de datos
 // La variable $conn debe ser un objeto de la clase mysqli (no PDO).
-include __DIR__ . "/../conexion.php";
+include __DIR__ . "../../../../conexion.php";
 
 // --- 1. FUNCIÓN PRINCIPAL PARA OBTENER EL HORARIO ---
 function obtenerHorarioPorGrupo($conn, $idGrupo) {

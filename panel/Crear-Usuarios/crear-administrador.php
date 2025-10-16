@@ -1,10 +1,12 @@
 <?php
 session_start();
 
-// Obtener el rol de la URL (1 para Admin, 2 para Docente)
-$rol_id = intval($_GET['rol'] ?? 2);
-$rol_nombre = ($rol_id == 1) ? 'Administrador' : 'Docente';
-$titulo_form = ($rol_id == 1) ? 'Nuevo Administrador' : 'Nuevo Docente';
+// =========================================================
+// CONFIGURACIÓN FIJA PARA ADMINISTRADOR (ID 1)
+// =========================================================
+$rol_id = 1;
+$rol_nombre = 'Administrador';
+$titulo_form = 'Nuevo Administrador';
 
 $message_text = '';
 $message_type = '';
@@ -22,24 +24,25 @@ if (isset($_SESSION['success_message'])) {
 // 1. PROCESAMIENTO DE MySQL (Solo en POST)
 // =========================================================
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
+    
     include "../../conexion.php"; 
 
     if (!isset($conn) || $conn->connect_error) {
         $message_type = 'error';
         $connect_error_msg = isset($conn) ? $conn->connect_error : 'El archivo conexion.php no proporcionó el objeto $conn o no existe.';
-        $message_text = "❌ Error de conexión a MySQL: " . $connect_error_msg;
+        $message_text = "❌ Error de conexión a MySQL. Verifique XAMPP y la BD (proyecto_its): " . $connect_error_msg;
     } else {
         $nombre = $conn->real_escape_string($_POST['nombre'] ?? '');
         $apellido = $conn->real_escape_string($_POST['apellido'] ?? '');
         $email = $conn->real_escape_string($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
         $documento = $conn->real_escape_string($_POST['cedula'] ?? '');
-        $rol_id_post = intval($_POST['rol_id'] ?? 2);
+        $rol_id_post = 1; // Fijo (Administrador)
 
-        if (empty($nombre) || empty($email) || strlen($password) < 6) {
+        // Validación básica
+        if (empty($nombre) || empty($email) || empty($documento) || strlen($password) < 6) {
             $message_type = 'error';
-            $message_text = '❌ Complete todos los campos requeridos y use una contraseña de al menos 6 caracteres.';
+            $message_text = '❌ Por favor, complete todos los campos requeridos (incluyendo Documento) y use una contraseña de al menos 6 caracteres.';
         } else {
             // =========================================================
             // 🧩 Verificar si el correo o documento ya existen
@@ -55,25 +58,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $message_text = '⚠️ Ya existe un usuario con ese correo o documento.';
                 } else {
                     // =========================================================
-                    // ✅ Crear usuario nuevo si no hay duplicados
+                    // ✅ Crear nuevo administrador
                     // =========================================================
                     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
                     $sql = "INSERT INTO usuario (Nombre, Apellido, Correo, Contrasena, ID_Rol, Documento)
                             VALUES (?, ?, ?, ?, ?, ?)";
-                    
+
                     if ($stmt = $conn->prepare($sql)) {
                         $stmt->bind_param("ssssis", $nombre, $apellido, $email, $hashed_password, $rol_id_post, $documento);
 
                         if ($stmt->execute()) {
                             $new_user_id = $stmt->insert_id;
-                            $success_message = "✅ Usuario " . htmlspecialchars($rol_nombre) . " creado con éxito. ID: **" . $new_user_id . "**";
+                            $success_message = "✅ Usuario Administrador creado con éxito. ID: **" . $new_user_id . "**";
                             $_SESSION['success_message'] = $success_message;
-                            header("Location: crear-docente.php");
+
+                            // Redirección (PRG Pattern)
+                            header("Location: crear-administrador.php");
                             exit();
                         } else {
                             $message_type = 'error';
                             $message_text = "❌ Error al insertar el registro: " . $stmt->error;
                         }
+
                         $stmt->close();
                     } else {
                         $message_type = 'error';
@@ -90,6 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
+// Mantener contraseña si hubo error
 $password_value = ($_SERVER['REQUEST_METHOD'] === 'POST' && $message_type === 'error') ? $_POST['password'] ?? '' : '';
 ?>
 
@@ -98,7 +105,8 @@ $password_value = ($_SERVER['REQUEST_METHOD'] === 'POST' && $message_type === 'e
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-     <style>
+    <title><?php echo $titulo_form; ?></title>
+    <style>
         :root{--bg:#f7f7fb; --card:#fff; --text:#12141a; --muted:#60646c;--brand:#4f46e5; --brand-2:#4338ca; --line:#e5e7eb; --radius:16px;}
         *{box-sizing:border-box}
         body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto}
@@ -121,9 +129,9 @@ $password_value = ($_SERVER['REQUEST_METHOD'] === 'POST' && $message_type === 'e
         .error{background:#f8d7da;color:#842029;border:1px solid #f5c2c7;}
         header{width: 100%;}
     </style>
-    
 </head>
 <?php include("../Views/header.php")?>
+
 <body>
     <div class="container">
         
@@ -134,49 +142,34 @@ $password_value = ($_SERVER['REQUEST_METHOD'] === 'POST' && $message_type === 'e
             <?php if ($message_text): ?>
                 <div id="message" class="<?php echo htmlspecialchars($message_type); ?>">
                     <?php echo $message_text; ?>
-                    
-                    <?php 
-                    // Mostrar el botón solo si fue un éxito Y el rol creado fue Docente (rol_id=2)
-                    if ($message_type == 'success' && $rol_id == 2): 
-                    ?>
-                        <div style="margin-top: 20px;">
-                            <a href="docentescreado.php" class="success-action-btn">
-                                Ver Docentes Creados y Administrar
-                            </a>
-                        </div>
-                    <?php endif; ?>
                 </div>
             <?php endif; ?>
 
-            <!-- El formulario ahora envía datos a sí mismo (crear-usuario-form.php) -->
             <form method="POST" action="">
-                <input type="hidden" name="rol_id" id="rol-id" value="<?php echo htmlspecialchars($rol_id); ?>">
-                <input type="hidden" name="rol_nombre" id="rol-nombre" value="<?php echo htmlspecialchars($rol_nombre); ?>">
-
+                <input type="hidden" name="rol_id" id="rol-id" value="1"> 
+                <input type="hidden" name="rol_nombre" id="rol-nombre" value="Administrador">
+                
                 <div class="form-group">
                     <label for="nombre">Nombre</label>
-                    <input type="text" name="nombre" id="nombre" required placeholder="Ej: Juan" 
+                    <input type="text" name="nombre" id="nombre" required placeholder="Ej: Ana" 
                            value="<?php echo htmlspecialchars($_POST['nombre'] ?? ''); ?>">
                 </div>
                 
                 <div class="form-group">
                     <label for="apellido">Apellido</label>
-                    <input type="text" name="apellido" id="apellido" required placeholder="Ej: Pérez" 
+                    <input type="text" name="apellido" id="apellido" required placeholder="Ej: Gómez" 
                            value="<?php echo htmlspecialchars($_POST['apellido'] ?? ''); ?>">
                 </div>
                 
-                <!-- Campo de Cédula/Documento solo para Docente (rol_id = 2) -->
-                <?php if ($rol_id == 2): ?>
                 <div class="form-group">
                     <label for="cedula">Documento / Cédula</label>
-                    <input type="text" name="cedula" id="cedula" required placeholder="Cédula o ID del docente" maxlength="10" 
+                    <input type="text" name="cedula" id="cedula" required placeholder="Cédula" maxlength="10" 
                            value="<?php echo htmlspecialchars($_POST['cedula'] ?? ''); ?>">
                 </div>
-                <?php endif; ?>
-
+                
                 <div class="form-group">
                     <label for="email">Correo Electrónico</label>
-                    <input type="email" name="email" id="email" required placeholder="ejemplo@its-p.edu" 
+                    <input type="email" name="email" id="email" required placeholder="admin@its-p.edu" 
                            value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
                 </div>
                 
@@ -186,24 +179,18 @@ $password_value = ($_SERVER['REQUEST_METHOD'] === 'POST' && $message_type === 'e
                            value="<?php echo htmlspecialchars($password_value); ?>">
                 </div>
 
-                <button type="submit" class="btn" id="submit-btn">Crear Usuario en MySQL</button>
+                <button type="submit" class="btn" id="submit-btn">Crear Administrador en MySQL</button>
             </form>
         </div>
     </div>
 
-    <!-- Script de soporte JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Ocultar mensaje después de 5 segundos si es un éxito
             const messageDiv = document.getElementById('message');
             if (messageDiv && messageDiv.classList.contains('success')) {
                 setTimeout(() => {
-                    // Solo ocultamos el texto, dejamos el botón visible si existe
-                    const textNode = messageDiv.firstChild; 
-                    if (textNode.nodeType === 3) {
-                         textNode.style.display = 'none';
-                    }
-                }, 8000); // 8 segundos para que dé tiempo a ver el mensaje
+                    messageDiv.style.display = 'none';
+                }, 8000); 
             }
         });
     </script>

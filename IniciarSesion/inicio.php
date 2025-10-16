@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { //Aca se comprueba que el formulari
                 $rol_nombre = strtolower($_SESSION['rol_nombre']);
                 switch ($rol_nombre) {
                     case 'administrador':
-                        header("Location: ../bienvenido.php");
+                        header("Location: ../bienvenido/bienvenido.php");
                         exit;
                     case 'profesor':
                         header("Location: ../panel_docente/index.php");

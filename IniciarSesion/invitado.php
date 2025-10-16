@@ -9,6 +9,6 @@ session_start();
 $_SESSION['usuario'] = 'Invitado';
 $_SESSION['rol'] = 8; // rol de invitado
 
-header("Location: ../bienvenido.php");
+header("Location: ../bienvenido/bienvenido.php");
 exit();
 ?>

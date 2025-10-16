@@ -1,0 +1,119 @@
+body {
+  display: flex;
+  justify-content: center; 
+  align-items: center;     /* centro vertical */
+  min-height: 100vh;
+  background-image: url('https://i.postimg.cc/PxFGH7Ky/fondo.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-family: Arial, sans-serif;
+}
+
+.logo {
+  display: block;
+  margin: 0 auto 1.5rem auto;
+  height: 100px;
+}
+
+.login-form {
+  background: #fff;
+  padding: 4rem;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 550px;
+  min-height: 500px;  /* altura mínima */
+  box-sizing: border-box;
+}
+
+.login-form label {
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+
+.login-form div {
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+
+.login-form input,
+.login-form select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: white;
+  box-sizing: border-box;
+  appearance: none; /* Oculta el estilo nativo de la flecha */
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23999' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 20px;
+}
+.codigo-verificacion-group{
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: white;
+  box-sizing: border-box;
+  appearance: none; /* Oculta el estilo nativo de la flecha */
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23999' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 20px;
+  margin-bottom: 10px;
+}
+
+/* Asegura que el option se vea bien (opcional) */
+.login-form select option {
+  font-size: 1rem;
+  padding: 0.5rem;
+}
+
+
+.login-form .btn {
+  margin-top: 1rem;
+  width: 95%;
+  padding: 0.5rem;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0 auto;
+  display: block;
+  text-align: center;
+  text-decoration: none;
+}
+
+.login-form .btn:hover {
+  background: #0056b3;
+}
+
+.forgot-password, .register-link {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.forgot-password a, .register-link a {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.forgot-password a:hover, .register-link a:hover {
+  text-decoration: underline;
+}
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}

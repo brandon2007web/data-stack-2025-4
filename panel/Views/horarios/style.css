@@ -1,0 +1,177 @@
+/* ====== Estilos generales ====== */
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f4f6f9;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    color: #333;
+}
+
+.container {
+    text-align: center;
+    max-width: 1100px;
+    width: 100%;
+}
+
+/* ====== Títulos ====== */
+h1 {
+    font-size: 26px;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+/* ====== Tabla Horario ====== */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    vertical-align: middle;
+}
+
+th {
+    background: #34495e;
+    color: #fff;
+    font-weight: bold;
+}
+
+td {
+    background: #fff;
+    transition: background 0.3s;
+}
+
+td:hover {
+    background: #f1f9ff;
+}
+
+.num {
+    width: 60px;
+    font-weight: bold;
+    background: #ecf0f1;
+}
+
+.hora {
+    width: 90px;
+    font-weight: bold;
+    background: #f8f9fa;
+    color: #555;
+}
+
+/* ====== Botón Guardar ====== */
+#guardarBtn {
+    margin: 20px auto;
+    display: inline-block;
+    padding: 10px 20px;
+    background: #27ae60;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
+    transition: background 0.3s, transform 0.2s;
+}
+
+#guardarBtn:hover {
+    background: #219150;
+    transform: scale(1.05);
+}
+
+/* ====== Formularios (Contenedor principal) ====== */
+/* ====== Formularios (Contenedor principal) ====== */
+.formularios {
+    /* Mantenemos el text-align: center para centrar el <h2> y el .formulario */
+    text-align: center;
+    margin-top: 25px; 
+    width: 100%;
+}
+
+/* ====== Título H2 dentro de .formularios ====== */
+/* Lo hacemos un bloque para que ocupe su propia línea */
+.formularios h2 {
+    display: block; 
+    margin-bottom: 15px; /* Separación del título a la caja del formulario */
+    /* Aseguramos que el texto esté centrado si el navegador lo requiere */
+    text-align: center; 
+}
+
+/* ====== Formulario (Caja visual) ====== */
+.formulario {
+    /* Con text-align: center en el padre, display: inline-block lo centrará */
+    display: inline-block; 
+    padding: 18px;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 8px;
+    width: 300px; 
+    text-align: left; /* Alinea los campos a la izquierda dentro de la caja */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+    /* Reducimos el margen superior ya que el h2 ya da la separación */
+    margin: 0 auto; 
+}
+
+
+.formulario:hover {
+    transform: translateY(-3px);
+}
+
+.formulario h2 {
+    margin-bottom: 12px;
+    font-size: 18px;
+    color: #2c3e50;
+}
+
+.formulario label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 13px;
+    color: #555;
+}
+
+.formulario select,
+.formulario input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    transition: border 0.3s;
+}
+
+.formulario select:focus,
+.formulario input:focus {
+    border: 1px solid #3498db;
+    box-shadow: 0 0 4px rgba(52,152,219,0.3);
+}
+
+/* ====== Botones generales ====== */
+.formulario button { 
+    margin-top: 15px;
+    padding: 8px 15px;
+    background: #3498db;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px; 
+    font-size: 14px;
+    transition: background 0.3s, transform 0.2s;
+    width: 100%; 
+}
+
+.formulario button:hover {
+    background: #2980b9;
+    transform: scale(1.01); 
+}

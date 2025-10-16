@@ -1,5 +1,5 @@
 <?php
-include __DIR__ . "/../conexion.php";
+include __DIR__ . "../../../conexion.php";
 header("Content-Type: application/json; charset=UTF-8");
 
 // Leer JSON
