@@ -21,6 +21,7 @@ require('comprobacion.php');
       <br><br>
       <h3>Menú Admin</h3>
       <a href="../panel/index.php" style="color:blue;">Panel Admin</a>
+            <a href="../panel/Views/horarios/horarios_asistencias.php">Marcar_no_Asistencia</a>
       <a href="../panel/Configuracion/configuracion.php">⚙️ Configuración</a>
       <a href="cerrar-sesion.php" style="color:red;">🚪 Cerrar sesión</a>
     </div>
