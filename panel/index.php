@@ -26,11 +26,11 @@ include("../conexion.php");
            
             <div class="dashboard-sections">
                 <a href="Views/Crear-Cursos/crear-cursos.php" class="dashboard-card">Cursos</a>
-                <a href="views/Crear-Grupos/grupos.php" class="dashboard-card">Grupos</a>
+                <a href="Views/Crear-Grupos/grupos.php" class="dashboard-card">Grupos</a>
 
                 <a href="Crear-Usuarios.php" class="dashboard-card">Usuarios</a>
-                <a href="views/aulas/aulas.php" class="dashboard-card">Aulas</a>
-                <a href="views/horarios/horarios.php"class="dashboard-card">Horarios</a>
+                <a href="Views/aulas/aulas.php" class="dashboard-card">Aulas</a>
+                <a href="Views/horarios/horarios.php"class="dashboard-card">Horarios</a>
 
 
             </div>

@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { //Aca se comprueba que el formulari
                         header("Location: ../bienvenido/bienvenido.php");
                         exit;
                     case 'profesor':
-                        header("Location: ../panel_docente/index.php");
+                        header("Location: ../bienvenido/bienvenido.php");
                         exit;
                     default:
                         echo "⚠️ Rol no válido o no encontrado.";
