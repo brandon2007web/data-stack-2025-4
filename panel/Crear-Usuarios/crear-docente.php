@@ -68,7 +68,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             $new_user_id = $stmt->insert_id;
                             $success_message = "✅ Usuario " . htmlspecialchars($rol_nombre) . " creado con éxito. ID: **" . $new_user_id . "**";
                             $_SESSION['success_message'] = $success_message;
-                            header("Location: crear-docente.php");
+
+                            // 🔁 Redirigir a la misma página (PRG Pattern)
+                            header("Location: " . $_SERVER['PHP_SELF'] . "?rol=" . $rol_id_post);
                             exit();
                         } else {
                             $message_type = 'error';
@@ -120,17 +122,28 @@ $password_value = ($_SERVER['REQUEST_METHOD'] === 'POST' && $message_type === 'e
         .success{background:#d1e7dd;color:#0f5132;border:1px solid #badbcc;}
         .error{background:#f8d7da;color:#842029;border:1px solid #f5c2c7;}
         header{width: 100%;}
+        .success-action-btn{
+            display:inline-block;
+            margin-top:15px;
+            background:#4f46e5;
+            color:#fff;
+            padding:10px 15px;
+            border-radius:8px;
+            text-decoration:none;
+        }
+        .success-action-btn:hover{
+            background:#4338ca;
+        }
     </style>
-    
 </head>
+
 <?php include("../Views/header.php")?>
+
 <body>
     <div class="container">
-        
         <h1>Crear <?php echo htmlspecialchars($titulo_form); ?></h1>
         
         <div class="card">
-            
             <?php if ($message_text): ?>
                 <div id="message" class="<?php echo htmlspecialchars($message_type); ?>">
                     <?php echo $message_text; ?>
@@ -148,7 +161,6 @@ $password_value = ($_SERVER['REQUEST_METHOD'] === 'POST' && $message_type === 'e
                 </div>
             <?php endif; ?>
 
-            <!-- El formulario ahora envía datos a sí mismo (crear-usuario-form.php) -->
             <form method="POST" action="">
                 <input type="hidden" name="rol_id" id="rol-id" value="<?php echo htmlspecialchars($rol_id); ?>">
                 <input type="hidden" name="rol_nombre" id="rol-nombre" value="<?php echo htmlspecialchars($rol_nombre); ?>">
@@ -165,14 +177,13 @@ $password_value = ($_SERVER['REQUEST_METHOD'] === 'POST' && $message_type === 'e
                            value="<?php echo htmlspecialchars($_POST['apellido'] ?? ''); ?>">
                 </div>
                 
-                <!-- Campo de Cédula/Documento solo para Docente (rol_id = 2) -->
-                <?php if ($rol_id == 2): ?>
+                
                 <div class="form-group">
                     <label for="cedula">Documento / Cédula</label>
-                    <input type="text" name="cedula" id="cedula" required placeholder="Cédula o ID del docente" maxlength="10" 
+                    <input type="text" name="cedula" id="cedula" required placeholder="Cédula" maxlength="10" 
                            value="<?php echo htmlspecialchars($_POST['cedula'] ?? ''); ?>">
                 </div>
-                <?php endif; ?>
+               
 
                 <div class="form-group">
                     <label for="email">Correo Electrónico</label>
@@ -191,19 +202,14 @@ $password_value = ($_SERVER['REQUEST_METHOD'] === 'POST' && $message_type === 'e
         </div>
     </div>
 
-    <!-- Script de soporte JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Ocultar mensaje después de 5 segundos si es un éxito
             const messageDiv = document.getElementById('message');
             if (messageDiv && messageDiv.classList.contains('success')) {
                 setTimeout(() => {
-                    // Solo ocultamos el texto, dejamos el botón visible si existe
-                    const textNode = messageDiv.firstChild; 
-                    if (textNode.nodeType === 3) {
-                         textNode.style.display = 'none';
-                    }
-                }, 8000); // 8 segundos para que dé tiempo a ver el mensaje
+                    messageDiv.style.opacity = '0';
+                    setTimeout(() => messageDiv.remove(), 500);
+                }, 8000);
             }
         });
     </script>
