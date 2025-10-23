@@ -1,10 +1,10 @@
 <?php
 session_start();
 
-// Obtener el rol de la URL (1 para Admin, 2 para Docente)
+// Obtener el rol de la URL, pero solo para mostrar el título
 $rol_id = intval($_GET['rol'] ?? 2);
-$rol_nombre = ($rol_id == 1) ? 'Administrador' : 'Docente';
-$titulo_form = ($rol_id == 1) ? 'Nuevo Administrador' : 'Nuevo Docente';
+$rol_nombre = 'Docente'; // 🔹 Siempre mostramos “Docente”
+$titulo_form = 'Nuevo Docente';
 
 $message_text = '';
 $message_type = '';
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $email = $conn->real_escape_string($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
         $documento = $conn->real_escape_string($_POST['cedula'] ?? '');
-        $rol_id_post = intval($_POST['rol_id'] ?? 2);
+        $rol_id_post = 2; // 🔹 Siempre asigna el rol Docente
 
         if (empty($nombre) || empty($email) || strlen($password) < 6) {
             $message_type = 'error';
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $message_text = '⚠️ Ya existe un usuario con ese correo o documento.';
                 } else {
                     // =========================================================
-                    // ✅ Crear usuario nuevo si no hay duplicados
+                    // ✅ Crear usuario nuevo (rol fijo = Docente)
                     // =========================================================
                     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
                     $sql = "INSERT INTO usuario (Nombre, Apellido, Correo, Contrasena, ID_Rol, Documento)
@@ -66,11 +66,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                         if ($stmt->execute()) {
                             $new_user_id = $stmt->insert_id;
-                            $success_message = "✅ Usuario " . htmlspecialchars($rol_nombre) . " creado con éxito. ID: **" . $new_user_id . "**";
+                            $success_message = "✅ Docente creado con éxito. ID: **" . $new_user_id . "**";
                             $_SESSION['success_message'] = $success_message;
 
-                            // 🔁 Redirigir a la misma página (PRG Pattern)
-                            header("Location: " . $_SERVER['PHP_SELF'] . "?rol=" . $rol_id_post);
+                            // 🔁 Redirigir a la misma página
+                            header("Location: " . $_SERVER['PHP_SELF'] . "?rol=2");
                             exit();
                         } else {
                             $message_type = 'error';
@@ -117,7 +117,6 @@ $password_value = ($_SERVER['REQUEST_METHOD'] === 'POST' && $message_type === 'e
         .btn{border:0;border-radius:12px;background:var(--brand);color:#fff;padding:12px 18px;font-weight:600;cursor:pointer;width:100%;transition:background .3s;}
         .btn:hover{background:var(--brand-2);}
         .btn:disabled{background:#ccc;cursor:not-allowed;} 
-        .back-link{display:block;margin-bottom:20px;text-align:center;color:var(--brand);text-decoration:none;font-weight:500;}
         #message{margin-top:20px;padding:10px;border-radius:12px;text-align:center;display:block;}
         .success{background:#d1e7dd;color:#0f5132;border:1px solid #badbcc;}
         .error{background:#f8d7da;color:#842029;border:1px solid #f5c2c7;}
@@ -131,9 +130,7 @@ $password_value = ($_SERVER['REQUEST_METHOD'] === 'POST' && $message_type === 'e
             border-radius:8px;
             text-decoration:none;
         }
-        .success-action-btn:hover{
-            background:#4338ca;
-        }
+        .success-action-btn:hover{background:#4338ca;}
     </style>
 </head>
 
@@ -147,11 +144,7 @@ $password_value = ($_SERVER['REQUEST_METHOD'] === 'POST' && $message_type === 'e
             <?php if ($message_text): ?>
                 <div id="message" class="<?php echo htmlspecialchars($message_type); ?>">
                     <?php echo $message_text; ?>
-                    
-                    <?php 
-                    // Mostrar el botón solo si fue un éxito Y el rol creado fue Docente (rol_id=2)
-                    if ($message_type == 'success' && $rol_id == 2): 
-                    ?>
+                    <?php if ($message_type == 'success'): ?>
                         <div style="margin-top: 20px;">
                             <a href="docentescreado.php" class="success-action-btn">
                                 Ver Docentes Creados y Administrar
@@ -162,8 +155,7 @@ $password_value = ($_SERVER['REQUEST_METHOD'] === 'POST' && $message_type === 'e
             <?php endif; ?>
 
             <form method="POST" action="">
-                <input type="hidden" name="rol_id" id="rol-id" value="<?php echo htmlspecialchars($rol_id); ?>">
-                <input type="hidden" name="rol_nombre" id="rol-nombre" value="<?php echo htmlspecialchars($rol_nombre); ?>">
+                <input type="hidden" name="rol_id" value="2">
 
                 <div class="form-group">
                     <label for="nombre">Nombre</label>
@@ -177,13 +169,11 @@ $password_value = ($_SERVER['REQUEST_METHOD'] === 'POST' && $message_type === 'e
                            value="<?php echo htmlspecialchars($_POST['apellido'] ?? ''); ?>">
                 </div>
                 
-                
                 <div class="form-group">
                     <label for="cedula">Documento / Cédula</label>
                     <input type="text" name="cedula" id="cedula" required placeholder="Cédula" maxlength="10" 
                            value="<?php echo htmlspecialchars($_POST['cedula'] ?? ''); ?>">
                 </div>
-               
 
                 <div class="form-group">
                     <label for="email">Correo Electrónico</label>
@@ -197,7 +187,7 @@ $password_value = ($_SERVER['REQUEST_METHOD'] === 'POST' && $message_type === 'e
                            value="<?php echo htmlspecialchars($password_value); ?>">
                 </div>
 
-                <button type="submit" class="btn" id="submit-btn">Crear Usuario en MySQL</button>
+                <button type="submit" class="btn" id="submit-btn">Crear Docente en MySQL</button>
             </form>
         </div>
     </div>
