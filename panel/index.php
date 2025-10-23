@@ -65,7 +65,7 @@ $totalUsuarios = mysqli_fetch_assoc($queryUsuarios)['total'] ?? 0;
 
         <!-- Secciones principales -->
         <div class="dashboard-sections">
-            <a href="Views/Crear-Cursos/crear-cursos.php" class="dashboard-card">
+            <a href="Views/Crear-Cursos/crear-Cursos.php" class="dashboard-card">
                 <i class="fas fa-book"></i>
                 <span>Cursos</span>
             </a>

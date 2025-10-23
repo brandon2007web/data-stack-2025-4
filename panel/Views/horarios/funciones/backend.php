@@ -1,5 +1,5 @@
 <?php
-include __DIR__ . "../../../../conexion.php";
+include __DIR__ . "../../../../../conexion.php";
 header("Content-Type: application/json");
 
 $json = file_get_contents("php://input");

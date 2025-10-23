@@ -1,4 +1,4 @@
-<?php require "conexion.php"; ?>
+<?php require "../../../conexion.php"; ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -17,7 +17,7 @@
 $id_aula = $_GET['id'] ?? null;
 if (!$id_aula) die("Aula no especificada.");
 
-$aula = $conn->query("SELECT Nombre FROM espacio WHERE ID_Espacio = $id_aula")->fetch_assoc();
+$aula = $conn->query("SELECT Nombre FROM aulas WHERE ID_Aula = $id_aula")->fetch_assoc();
 if (!$aula) die("Aula no encontrada.");
 
 echo "<h1>Recursos del aula: " . htmlspecialchars($aula['Nombre']) . "</h1>";

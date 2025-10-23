@@ -1,0 +1,25 @@
+body{margin:0;font-family:Poppins,sans-serif;background:#f4f6f9;}
+.dashboard{display:flex;height:100vh;}
+.sidebar{width:250px;background:#2c3e50;color:white;padding:20px;box-sizing:border-box;flex-shrink:0;}
+.sidebar h2{margin-top:0;margin-bottom:20px;}
+.sidebar select, .sidebar button{width:100%;padding:10px;margin-bottom:15px;border-radius:6px;border:none;}
+.sidebar button{background:#27ae60;color:#fff;font-weight:bold;cursor:pointer;transition:0.3s;}
+.sidebar button:hover{background:#2ecc71;}
+.main{flex-grow:1;overflow:auto;padding:20px;}
+.table-wrapper{overflow-x:auto;}
+.horario-table{border-collapse:collapse;width:100%;min-width:700px;box-shadow:0 8px 20px rgba(0,0,0,0.1);border-radius:10px;overflow:hidden;}
+.horario-table th,.horario-table td{border:1px solid #e0e0e0;padding:12px 8px;text-align:center;white-space:nowrap;}
+.horario-table th{background:#34495e;color:#fff;position:sticky;top:0;z-index:2;}
+.horario-table th.hora-header{position:sticky;left:0;background:#e9ecef;color:#495057;z-index:3;}
+.horario-table td.editable{cursor:pointer;transition:0.3s;}
+.horario-table td.editable:hover{background:#d0ebff;}
+td.seleccionado{background:#ff4d4d;color:white;font-weight:bold;}
+td.vacio{background:#f8f9fa;color:#99aab5;font-style:italic;font-size:13px;}
+.tooltip{position:relative;}
+.tooltip:hover::after{
+    content:attr(data-tooltip);
+    position:absolute;top:-30px;left:50%;transform:translateX(-50%);
+    background:#333;color:#fff;padding:4px 8px;border-radius:4px;font-size:12px;white-space:nowrap;pointer-events:none;opacity:0.9;
+}
+button.guardar{margin:20px auto;display:block;padding:12px 20px;background:#27ae60;color:#fff;border:none;border-radius:8px;font-size:16px;cursor:pointer;transition:0.3s;}
+button.guardar:hover{background:#2ecc71;transform:scale(1.05);}

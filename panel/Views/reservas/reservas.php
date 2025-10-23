@@ -1,40 +1,5 @@
 <?php
-session_start();
-include("../../../conexion.php");
-
-// Inicializar variables de mensaje
-$message_text = '';
-$message_type = '';
-
-// Verificar si hay mensaje en la sesión
-if (isset($_SESSION['message'])) {
-    $message_text = $_SESSION['message']['text'];
-    $message_type = $_SESSION['message']['type'];
-    unset($_SESSION['message']); // evitar mostrarlo en recarga
-}
-
-// === 1. Obtener recursos ===
-$recursos_disponibles = [];
-$sql_recursos = "SELECT ID_Recurso, Nombre, Estado FROM recursos ORDER BY Nombre ASC";
-$result_recursos = $conn->query($sql_recursos);
-if ($result_recursos) {
-    while ($row = $result_recursos->fetch_assoc()) {
-        $recursos_disponibles[] = $row;
-    }
-}
-
-// === 2. Obtener aulas ===
-$aulas_disponibles = [];
-$sql_aulas = "SELECT ID_Aula, Nombre, ID_Piso FROM aulas ORDER BY Nombre ASC";
-$result_aulas = $conn->query($sql_aulas);
-if ($result_aulas) {
-    while ($row = $result_aulas->fetch_assoc()) {
-        $aulas_disponibles[] = $row;
-    }
-}
-
-// === 3. Usuario actual (de sesión) ===
-$id_usuario_actual = $_SESSION['usuario_id'] ?? null;
+include(__DIR__.'/funciones/func_resera.php')
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -42,71 +7,7 @@ $id_usuario_actual = $_SESSION['usuario_id'] ?? null;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear Nueva Reserva</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
-            padding: 30px;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-        }
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: bold;
-        }
-        input[type="datetime-local"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #3498db;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 20px;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #2980b9;
-        }
-        .mensaje {
-            padding: 12px;
-            margin-bottom: 15px;
-            border-radius: 6px;
-            font-weight: bold;
-            text-align: center;
-        }
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">

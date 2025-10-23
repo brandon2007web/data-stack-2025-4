@@ -1,64 +1,5 @@
 <?php
-// ¡IMPORTANTE! Iniciar la sesión al principio
-session_start();
-
-// 1. Incluir el archivo de conexión a la base de datos
-// AJUSTA ESTA RUTA si es necesario
-include("../../../conexion.php"); 
-
-// Inicializar variables de mensaje
-$message_text = '';
-$message_type = '';
-
-// Verificar si existe un mensaje en la sesión (enviado por procesar_creacion.php)
-if (isset($_SESSION['message'])) {
-    $message_text = $_SESSION['message']['text'];
-    $message_type = $_SESSION['message']['type'];
-    
-    // Eliminar el mensaje de la sesión para que no se muestre al recargar
-    unset($_SESSION['message']);
-}
-
-// Variables para almacenar resultados de consultas
-$aulas_ubicacion = [];
-$tipos_recurso = [];
-$error_carga = null; // Para errores generales de conexión/consulta
-
-// 2. Consulta para obtener la lista combinada de Aulas y Pisos (para Ubicación)
-$tabla_aulas = 'aulas'; 
-$sql_aulas = "SELECT 
-                a.ID_Aula, 
-                a.Nombre AS NombreAula, 
-                p.Nombre_Piso
-              FROM {$tabla_aulas} a
-              JOIN pisos p ON a.ID_Piso = p.ID_Piso
-              ORDER BY p.ID_Piso, NombreAula ASC";
-
-$result_aulas = $conn->query($sql_aulas);
-
-if ($result_aulas) {
-    while ($row = $result_aulas->fetch_assoc()) {
-        $aulas_ubicacion[] = $row;
-    }
-} else {
-    $error_carga = "❌ Error al cargar aulas/pisos: " . $conn->error;
-}
-
-// 3. Consulta para obtener la lista de Tipos de Recursos
-$tabla_tipos = 'tipo_recursos';
-$sql_tipos = "SELECT ID_Tipo_Recurso, Nombre_Tipo_Recurso FROM {$tabla_tipos} ORDER BY Nombre_Tipo_Recurso ASC";
-
-$result_tipos = $conn->query($sql_tipos);
-
-if ($result_tipos) {
-    while ($row = $result_tipos->fetch_assoc()) {
-        $tipos_recurso[] = $row;
-    }
-} else {
-    if (!$error_carga) { // Si no había un error anterior, registra este.
-        $error_carga = "❌ Error al cargar tipos de recurso: " . $conn->error;
-    }
-}
+include(__DIR__.'/funciones/func_recursos.php')
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -66,18 +7,7 @@ if ($result_tipos) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear Nuevo Recurso</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f6f9; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #34495e; }
-        label { display: block; margin-top: 15px; font-weight: bold; }
-        input[type="text"], input[type="date"], textarea, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { background-color: #2ecc71; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 20px; font-size: 16px; }
-        button:hover { background-color: #27ae60; }
-        .mensaje { padding: 10px; margin-top: 10px; border-radius: 4px; font-weight: bold; }
-        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">

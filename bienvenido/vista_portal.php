@@ -3,7 +3,6 @@ include(__DIR__ . '/comprobacion.php');
 include(__DIR__ . '/../conexion.php');
 
 $nombre = $_SESSION['nombre'] ?? 'Invitado';
-$rol_id = $_SESSION['rol'] ?? 0;
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -20,7 +19,7 @@ $rol_id = $_SESSION['rol'] ?? 0;
   <!-- HEADER -->
   <header class="site-header">
     <div class="container header-inner">
-      <?php if ($rol_id == 1): ?>
+      <?php if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2): ?>
       <button class="hamburger" id="hamburger" aria-label="Abrir menú de administrador">
         <span></span><span></span><span></span>
       </button>
@@ -44,13 +43,20 @@ $rol_id = $_SESSION['rol'] ?? 0;
     </div>
   </header>
 
-  <!-- SIDEBAR ADMIN -->
-  <?php if ($rol_id == 1): ?>
+  <!-- SIDEBAR SEGÚN ROL -->
+  <?php if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2): ?>
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header"><h3>Menú Admin</h3></div>
+    <div class="sidebar-header"><h3>Menú</h3></div>
     <nav class="sidebar-nav">
-      <a href="../panel/index.php" class="sidebar-link">📊 Panel Admin</a>
-      <a href="../panel/Configuracion/configuracion.php" class="sidebar-link">⚙️ Configuración</a>
+        <?php if ($_SESSION['rol'] == 1): // Admin ?>
+            <a href="../panel/index.php" class="sidebar-link">📊 Panel Admin</a>
+            <a href="../panel/Configuracion/configuracion.php" class="sidebar-link">⚙️ Configuración</a>
+        <?php elseif ($_SESSION['rol'] == 2): // Docente ?>
+            <a href="../panel/Reservas/reservas.php" class="sidebar-link">📅 Reservas</a>
+            <a href="../panel/Configuracion/configuracion.php" class="sidebar-link">⚙️ Configuración</a>
+            <a href="../panel/Reportes/reportes.php" class="sidebar-link">📄 Reportes</a>
+            <a href="../panel/Horarios/ver_horarios.php" class="sidebar-link">🕒 Horarios</a>
+        <?php endif; ?>
     </nav>
   </aside>
   <div class="overlay" id="overlay"></div>
@@ -85,6 +91,7 @@ $rol_id = $_SESSION['rol'] ?? 0;
       <p class="footer-sub">2025</p>
     </div>
   </footer>
+
   <script src="script.js"></script>
 </body>
 </html>
