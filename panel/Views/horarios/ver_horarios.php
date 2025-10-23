@@ -1,6 +1,19 @@
 <?php
+// 1. SOLUCIÓN: Iniciar la sesión para cargar la variable $_SESSION['rol'].
+session_start(); 
+if (!isset($_SESSION['usuario'])) {
+    header("Location: /IniciarSesion/iniciarsesion.php");
+    exit();
+}
+
 include __DIR__ . "../../../../conexion.php";
-define('HORA_INICIO_CLASE_BASE', '07:00:00');
+// La constante HORA_INICIO_CLASE_BASE y su uso han sido eliminados.
+
+// Obtiene ID_Rol de la sesión. Si no hay sesión o no hay rol, se usa 0.
+$idRoloUsuario = $_SESSION['rol'] ?? 0;
+
+// Definimos si el usuario tiene permiso de edición (ID_Rol 1 o 2)
+$tienePermisoEdicion = ($idRoloUsuario == 1 || $idRoloUsuario == 2);
 
 function renderSelectForm($grupos, $grupoSeleccionadoID) {
     ob_start();
@@ -66,22 +79,22 @@ if(isset($conn)){
         while($row=$res->fetch_assoc()){$dias[]=$row['Nombre'];$mapaDias[$row['Nombre']]=$row['ID_Dia'];}
         $res->free();
     }
-    $hora_timestamp=strtotime(HORA_INICIO_CLASE_BASE);
+    
+    // Obtención de horas simplificada (se asume que 'Nombre' de la tabla 'horas' es el rango de tiempo)
     if($res=$conn->query("SELECT ID_Hora, Nombre, Duracion FROM horas ORDER BY ID_Hora")){
         while($row=$res->fetch_assoc()){
-            $dur=(int)$row['Duracion'];
-            $row['HoraInicio']=date('H:i:s',$hora_timestamp);
-            $hora_timestamp+=($dur*60);
-            $row['HoraFin']=date('H:i:s',$hora_timestamp);
             $horas[]=$row;
         }
         $res->free();
     }
-    if($grupoSeleccionadoID>0){
+    
+    // 2. SOLUCIÓN: SIEMPRE obtenemos los horarios marcados si se seleccionó un grupo, independientemente del rol.
+    if($grupoSeleccionadoID > 0){ 
         $stmt=$conn->prepare("SELECT id_dia,id_hora FROM horario_marcado WHERE id_grupo=? AND estado=1");
         $stmt->bind_param("i",$grupoSeleccionadoID);
         $stmt->execute();
         $res=$stmt->get_result();
+        // $marcados ahora contiene los horarios rojos para todos los roles
         while($row=$res->fetch_assoc()) $marcados[$row['id_dia']][$row['id_hora']]=true;
         $stmt->close();
     }
@@ -100,10 +113,12 @@ body{font-family:Arial;background:#f4f6f9;margin:0;padding:20px;color:#333;displ
 .horario-table{border-collapse:collapse;width:100%;margin:30px auto;font-size:14px;box-shadow:0 8px 20px rgba(0,0,0,0.15);border-radius:10px;overflow:hidden;border:1px solid #e0e0e0;}
 .horario-table th,.horario-table td{border:1px solid #e0e0e0;padding:12px 8px;vertical-align:middle;height:55px;}
 .horario-table th{background:#34495e;color:#fff;font-weight:bold;text-transform:uppercase;font-size:13px;}
-.horario-table td{background:#fff;transition:background 0.3s;max-width:200px;min-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;cursor:pointer;}
-.horario-table td:hover{background:#e9f5ff;}
+.horario-table td{background:#fff;transition:background 0.3s;max-width:200px;min-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;}
+/* Hacemos que sea editable SOLO si tiene la clase 'editable', que solo se aplica a roles 1 y 2 */
+.horario-table td.editable{cursor:pointer;} 
+.horario-table td.editable:hover{background:#e9f5ff;}
 .hora-header{width:120px;font-weight:bold;background:#e9ecef;color:#495057;position:sticky;left:0;z-index:10;border-right:2px solid #ccc;line-height:1.3;}
-.hora-header small{display:block;font-weight:normal;color:#555;}
+/* small tag para el tiempo eliminada */
 .vacio{background:#f8f9fa;color:#99aab5;font-style:italic;font-size:13px;cursor:default;}
 td.seleccionado{background:#ff4d4d !important;color:white;font-weight:bold;}
 .select-form-wrapper{margin-top:25px;text-align:center;}
@@ -111,10 +126,12 @@ td.seleccionado{background:#ff4d4d !important;color:white;font-weight:bold;}
 .select-form select{width:100%;padding:10px;margin-bottom:15px;border:2px solid #ccc;border-radius:6px;outline:none;}
 .select-form button{padding:12px 20px;background:#2ecc71;color:#fff;border:none;border-radius:6px;font-size:16px;font-weight:bold;width:100%;cursor:pointer;}
 .select-form button:hover{background:#27ae60;}
+.debug-info{padding:10px;margin-bottom:15px;background:#ffe0b2;border:1px solid #ff9800;border-radius:5px;text-align:center;}
 </style>
 </head>
 <body>
 <div class="container">
+
 <h1>Horario Semanal por Grupo</h1>
 <?php echo renderSelectForm($grupos,$grupoSeleccionadoID); ?>
 
@@ -127,15 +144,29 @@ td.seleccionado{background:#ff4d4d !important;color:white;font-weight:bold;}
 <tbody>
 <?php foreach($horas as $hora): ?>
 <tr>
-<th class="hora-header"><?php echo htmlspecialchars($hora['Nombre']); ?><small><?php echo substr($hora['HoraInicio'],0,5).' - '.substr($hora['HoraFin'],0,5); ?></small></th>
+<th class="hora-header">
+    <?php echo htmlspecialchars($hora['Nombre']); ?>
+</th>
 <?php foreach($dias as $dia):
     $asignatura=$horarioData['detalle'][$dia][$hora['Nombre']] ?? 'Libre';
     $clase=($asignatura==='Libre')?'vacio':'';
     $idDia=$mapaDias[$dia];
     $idHora=$hora['ID_Hora'];
-    if(isset($marcados[$idDia][$idHora])) $clase.=' seleccionado';
+
+    $dataAttributes = '';
+    
+    // 3. SOLUCIÓN: Aplicar color rojo (seleccionado) para TODOS los usuarios.
+    if(isset($marcados[$idDia][$idHora])) {
+        $clase.=' seleccionado';
+    }
+
+    // Lógica de Permiso y asignación de clases de edición (SOLO para roles 1 y 2).
+    if($tienePermisoEdicion && $asignatura !== 'Libre'){
+        $dataAttributes = "data-grupo=\"$grupoSeleccionadoID\" data-id-dia=\"$idDia\" data-id-hora=\"$idHora\"";
+        $clase .= ' editable'; // Clase CLAVE que activa el click y el hover para editores
+    }
 ?>
-<td class="<?php echo $clase; ?>" data-grupo="<?php echo $grupoSeleccionadoID; ?>" data-id-dia="<?php echo $idDia; ?>" data-id-hora="<?php echo $idHora; ?>">
+<td class="<?php echo $clase; ?>" <?php echo $dataAttributes; ?>>
 <?php echo htmlspecialchars($asignatura); ?>
 </td>
 <?php endforeach; ?>
@@ -147,65 +178,73 @@ td.seleccionado{background:#ff4d4d !important;color:white;font-weight:bold;}
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const celdas = document.querySelectorAll(".horario-table td");
-    const horariosMarcados = {}; // Para guardar cambios en memoria
+// --- PASAMOS EL ESTADO DE PERMISO DE PHP A JAVASCRIPT ---
+const CAN_EDIT_SCHEDULE = <?php echo $tienePermisoEdicion ? 'true' : 'false'; ?>;
 
-    celdas.forEach(celda => {
-        if (!celda.classList.contains("vacio")) {
+document.addEventListener("DOMContentLoaded", function() {
+    // Si el usuario tiene permiso (ID_Rolo 1 o 2), activamos la funcionalidad
+    if (CAN_EDIT_SCHEDULE) {
+        // Seleccionamos SOLO las celdas que PHP marcó como editables
+        const celdas = document.querySelectorAll(".horario-table td.editable");
+        const horariosMarcados = {};
+
+        // 1. Lógica de Marcado (Toggle 'seleccionado') - Solo funciona en celdas 'editable'
+        celdas.forEach(celda => {
             celda.addEventListener("click", function() {
                 this.classList.toggle("seleccionado");
                 const id_grupo = this.dataset.grupo;
-                const id_dia   = this.dataset.idDia;
-                const id_hora  = this.dataset.idHora;
-                const estado   = this.classList.contains("seleccionado") ? 1 : 0;
+                const id_dia   = this.dataset.idDia;
+                const id_hora  = this.dataset.idHora;
+                const estado   = this.classList.contains("seleccionado") ? 1 : 0;
 
                 // Guardar cambio en objeto temporal
                 if (!horariosMarcados[id_grupo]) horariosMarcados[id_grupo] = {};
                 if (!horariosMarcados[id_grupo][id_dia]) horariosMarcados[id_grupo][id_dia] = {};
                 horariosMarcados[id_grupo][id_dia][id_hora] = estado;
             });
-        }
-    });
+        });
 
-    // Crear botón de guardar
-    const btnGuardar = document.createElement("button");
-    btnGuardar.textContent = "Guardar Horario";
-    btnGuardar.style.margin = "20px auto";
-    btnGuardar.style.padding = "12px 20px";
-    btnGuardar.style.background = "#2ecc71";
-    btnGuardar.style.color = "#fff";
-    btnGuardar.style.border = "none";
-    btnGuardar.style.borderRadius = "6px";
-    btnGuardar.style.fontSize = "16px";
-    btnGuardar.style.cursor = "pointer";
-    document.querySelector(".container").appendChild(btnGuardar);
+        // 2. Crear y Configurar Botón de Guardar
+        const btnGuardar = document.createElement("button");
+        btnGuardar.textContent = "Guardar Horario";
+        btnGuardar.style.margin = "20px auto";
+        btnGuardar.style.padding = "12px 20px";
+        btnGuardar.style.background = "#2ecc71";
+        btnGuardar.style.color = "#fff";
+        btnGuardar.style.border = "none";
+        btnGuardar.style.borderRadius = "6px";
+        btnGuardar.style.fontSize = "16px";
+        btnGuardar.style.cursor = "pointer";
+        btnGuardar.style.display = "block";
 
-    btnGuardar.addEventListener("click", function() {
-        if (Object.keys(horariosMarcados).length === 0) {
-            alert("No hay cambios para guardar.");
-            return;
-        }
+        document.querySelector(".container").appendChild(btnGuardar);
 
-        fetch("guardar_marcado.php", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(horariosMarcados)
-        })
-        .then(res => res.text())
-        .then(data => {
-            if (data.trim() === "ok") {
-                alert("Horario guardado correctamente!");
-                // Vaciar cambios guardados
-                for (let g in horariosMarcados) delete horariosMarcados[g];
-            } else {
-                alert("Error al guardar: " + data);
+        btnGuardar.addEventListener("click", function() {
+            if (Object.keys(horariosMarcados).length === 0) {
+                alert("No hay cambios para guardar.");
+                return;
             }
-        })
-        .catch(err => alert("Error al conectar con el servidor: " + err));
-    });
-});
 
+            fetch("guardar_marcado.php", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(horariosMarcados)
+            })
+            .then(res => res.text())
+            .then(data => {
+                if (data.trim() === "ok") {
+                    alert("Horario guardado correctamente!");
+                    // Vaciar cambios guardados y recargar para ver los nuevos marcados
+                    for (let g in horariosMarcados) delete horariosMarcados[g];
+                    location.reload(); 
+                } else {
+                    alert("Error al guardar: " + data);
+                }
+            })
+            .catch(err => alert("Error al conectar con el servidor: " + err));
+        });
+    }
+});
 </script>
 </body>
 </html>

@@ -3,25 +3,164 @@ session_start();
 include __DIR__ . "../../../../conexion.php";
 
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario'] === 'Invitado') {
-    // Redirige a otra página o muestra un mensaje
     header("Location: bienvenido.php");
     exit;
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Horario Semanal</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Horario Semanal</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg: #f4f6fc;
+    --card: #fff;
+    --primary: #4f46e5;
+    --primary-dark: #4338ca;
+    --text: #1e1e2f;
+    --muted: #6c6f85;
+    --border: #e5e7eb;
+    --radius: 12px;
+    --hover: rgba(79,70,229,0.1);
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    margin: 0;
+    color: var(--text);
+}
+
+.container {
+    max-width: 1100px;
+    margin: 80px auto 50px;
+    padding: 0 1rem;
+}
+
+h1 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    color: var(--primary-dark);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    background: var(--card);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+}
+
+thead {
+    background: var(--primary);
+    color: #fff;
+}
+
+thead th {
+    padding: 12px 10px;
+    font-weight: 500;
+}
+
+tbody td {
+    text-align: center;
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--border);
+}
+
+tbody tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+tbody tr:hover {
+    background: var(--hover);
+}
+
+td.num {
+    font-weight: 600;
+    color: var(--primary-dark);
+}
+
+td.hora {
+    font-size: 0.9rem;
+    color: var(--muted);
+}
+
+button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 18px;
+    background: var(--primary);
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+button:hover {
+    background: var(--primary-dark);
+    transform: scale(1.05);
+}
+
+.formularios {
+    margin-top: 40px;
+    background: var(--card);
+    padding: 25px 20px;
+    border-radius: var(--radius);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+}
+
+.formularios h2 {
+    color: var(--primary-dark);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.formulario label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: var(--text);
+}
+
+.formulario input, .formulario select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+
+.formulario input:focus, .formulario select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 5px rgba(79,70,229,0.2);
+    outline: none;
+}
+
+#agregarBtn {
+    width: 100%;
+}
+</style>
 </head>
 <body>
+
 <div class="container">
     <h1>HORARIO SEMANAL</h1>
 
-    <table id="horario" border="1" cellpadding="5" cellspacing="0">
+    <table id="horario">
         <thead>
             <tr>
                 <th>#</th>
@@ -34,107 +173,102 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario'] === 'Invitado') {
             </tr>
         </thead>
         <tbody>
-            <?php
-            $sql = "SELECT ID_Hora, Nombre, Duracion FROM horas ORDER BY ID_Hora ASC";
-            $result = $conn->query($sql);
+        <?php
+        $sql = "SELECT ID_Hora, Nombre, Duracion FROM horas ORDER BY ID_Hora ASC";
+        $result = $conn->query($sql);
 
-            if ($result && $result->num_rows > 0) {
-                $inicio = strtotime("07:00");
-                // *** 1. Inicialización de la variable clave ***
-                $contador_fila = 0; 
+        if ($result && $result->num_rows > 0) {
+            $inicio = strtotime("07:00");
+            $contador_fila = 0;
 
-                while ($row = $result->fetch_assoc()) {
-                    $idHora     = (int)$row['ID_Hora'];
-                    $nombre     = htmlspecialchars($row['Nombre']);
-                    $duracion = (int)$row['Duracion'];
-                    
-                    $nombre_lower = strtolower($nombre);
-                    // Esto asume que solo 'recreo' o 'pausa' no deben tener celdas de materia
-                    $es_bloque_clase = $nombre_lower != 'recreo' && $nombre_lower != 'pausa'; 
+            while ($row = $result->fetch_assoc()) {
+                $idHora     = (int)$row['ID_Hora'];
+                $nombre     = htmlspecialchars($row['Nombre']);
+                $duracion   = (int)$row['Duracion'];
 
-                    $hora_inicio = date('H:i', $inicio);
-                    $hora_fin    = date('H:i', strtotime("+$duracion minutes", $inicio));
+                $nombre_lower = strtolower($nombre);
+                $es_bloque_clase = $nombre_lower != 'recreo' && $nombre_lower != 'pausa';
 
-                    if (!$es_bloque_clase) {
-                        // Fila para recreo/pausa sin celdas de materia
-                        echo "<tr>
-                                <td colspan='2' class='num'>{$nombre}</td>
-                                <td colspan='5' class='hora'>{$hora_inicio} - {$hora_fin}</td>
-                            </tr>";
-                    } else {
-                        // *** 2. Incremento y uso del contador para data-indice-fila ***
-                        $contador_fila++;
-                        echo "<tr>
-                                <td>{$nombre}</td>
-                                <td>{$hora_inicio} - {$hora_fin}</td>
-                                <td data-dia='1' data-hora='{$idHora}' data-indice-fila='{$contador_fila}'></td>
-                                <td data-dia='2' data-hora='{$idHora}' data-indice-fila='{$contador_fila}'></td>
-                                <td data-dia='3' data-hora='{$idHora}' data-indice-fila='{$contador_fila}'></td>
-                                <td data-dia='4' data-hora='{$idHora}' data-indice-fila='{$contador_fila}'></td>
-                                <td data-dia='5' data-hora='{$idHora}' data-indice-fila='{$contador_fila}'></td>
-                            </tr>";
-                    }
+                $hora_inicio = date('H:i', $inicio);
+                $hora_fin    = date('H:i', strtotime("+$duracion minutes", $inicio));
 
-                    $inicio = strtotime("+$duracion minutes", $inicio);
+                if (!$es_bloque_clase) {
+                    echo "<tr>
+                            <td colspan='2' class='num'>{$nombre}</td>
+                            <td colspan='5' class='hora'>{$hora_inicio} - {$hora_fin}</td>
+                        </tr>";
+                } else {
+                    $contador_fila++;
+                    echo "<tr>
+                            <td>{$nombre}</td>
+                            <td>{$hora_inicio} - {$hora_fin}</td>
+                            <td data-dia='1' data-hora='{$idHora}' data-indice-fila='{$contador_fila}'></td>
+                            <td data-dia='2' data-hora='{$idHora}' data-indice-fila='{$contador_fila}'></td>
+                            <td data-dia='3' data-hora='{$idHora}' data-indice-fila='{$contador_fila}'></td>
+                            <td data-dia='4' data-hora='{$idHora}' data-indice-fila='{$contador_fila}'></td>
+                            <td data-dia='5' data-hora='{$idHora}' data-indice-fila='{$contador_fila}'></td>
+                        </tr>";
                 }
-            } else {
-                echo "<tr><td colspan='7'>No hay horas cargadas en la BD</td></tr>";
+
+                $inicio = strtotime("+$duracion minutes", $inicio);
             }
-            ?>
+        } else {
+            echo "<tr><td colspan='7'>No hay horas cargadas en la BD</td></tr>";
+        }
+        ?>
         </tbody>
     </table>
 
     <button id="guardarBtn" style="display:none">Guardar Horario</button>
 
-<div class="formularios">
+    <div class="formularios">
+        <h2>Agregar Materia al Horario</h2>
+        <div class="formulario">
+            <label for="nombreHorario">Nombre del Horario:</label>
+            <input type="text" id="nombreHorario" placeholder="Ingrese un nombre">
 
-    <h2>Agregar Materia al Horario</h2>
-
-    <div class="formulario">
-        <label for="nombreHorario">Nombre del Horario:</label>
-<input type="text" id="nombreHorario" placeholder="Ingrese un nombre">
-       
-        <label for="grupo">Grupo:</label>
-        <select id="grupo">
-            <option value="">-- Seleccione --</option>
-            <?php
-            $resGrupos = $conn->query("SELECT ID_Grupo, Nombre FROM grupo ORDER BY Nombre ASC");
-            while ($row = $resGrupos->fetch_assoc()) {
-                echo "<option value='{$row['ID_Grupo']}'>" . htmlspecialchars($row['Nombre']) . "</option>";
-            }
-            ?>
-        </select>
-
-        <label for="dia">Día:</label>
-        <select id="dia">
-            <option value="1">Lunes</option>
-            <option value="2">Martes</option>
-            <option value="3">Miércoles</option>
-            <option value="4">Jueves</option>
-            <option value="5">Viernes</option>
-        </select>
-
-        <label for="bloque">Hora:</label>
-        <select id="bloque">
-            <?php
-            // Se filtra para que solo salgan horas de clase en el selector
-            $resHoras = $conn->query("SELECT ID_Hora, Nombre FROM horas ORDER BY ID_Hora ASC");
-            while ($h = $resHoras->fetch_assoc()) {
-                $nombre_h = strtolower($h['Nombre']);
-                if ($nombre_h != 'recreo' && $nombre_h != 'pausa') {
-                    echo "<option value='{$h['ID_Hora']}'>" . htmlspecialchars($h['Nombre']) . "</option>";
+            <label for="grupo">Grupo:</label>
+            <select id="grupo">
+                <option value="">-- Seleccione --</option>
+                <?php
+                $resGrupos = $conn->query("SELECT ID_Grupo, Nombre FROM grupo ORDER BY Nombre ASC");
+                while ($row = $resGrupos->fetch_assoc()) {
+                    echo "<option value='{$row['ID_Grupo']}'>" . htmlspecialchars($row['Nombre']) . "</option>";
                 }
-            }
-            ?>
-        </select>
+                ?>
+            </select>
 
-        <label for="materia">Materia:</label>
-        <select id="materia">
-            <option value="">Seleccione un grupo primero</option>
-        </select>
+            <label for="dia">Día:</label>
+            <select id="dia">
+                <option value="1">Lunes</option>
+                <option value="2">Martes</option>
+                <option value="3">Miércoles</option>
+                <option value="4">Jueves</option>
+                <option value="5">Viernes</option>
+            </select>
 
-        <button id="agregarBtn" type="button">Agregar Materia</button>
+            <label for="bloque">Hora:</label>
+            <select id="bloque">
+                <?php
+                $resHoras = $conn->query("SELECT ID_Hora, Nombre FROM horas ORDER BY ID_Hora ASC");
+                while ($h = $resHoras->fetch_assoc()) {
+                    $nombre_h = strtolower($h['Nombre']);
+                    if ($nombre_h != 'recreo' && $nombre_h != 'pausa') {
+                        echo "<option value='{$h['ID_Hora']}'>" . htmlspecialchars($h['Nombre']) . "</option>";
+                    }
+                }
+                ?>
+            </select>
+
+            <label for="materia">Materia:</label>
+            <select id="materia">
+                <option value="">Seleccione un grupo primero</option>
+            </select>
+
+            <button id="agregarBtn" type="button">Agregar Materia</button>
+        </div>
     </div>
+
 </div>
 
 <script src="lol.js"></script>

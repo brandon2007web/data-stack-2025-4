@@ -1,130 +1,77 @@
-const IMAGENES = [
-  "https://i.postimg.cc/wvLZ6S6N/Chat-GPT-Image-18-ago-2025-20-45-44.png",
-  "https://i.postimg.cc/DyDnC3YQ/Chat-GPT-Image-18-ago-2025-19-44-53.png",
-  "https://i.postimg.cc/FF6nJr64/Chat-GPT-Image-18-ago-2025-20-26-46.png"
-];
 
-const $ = sel => document.querySelector(sel);
-const $$ = (sel, c = document) => Array.from(c.querySelectorAll(sel));
+  document.getElementById('anio').textContent = new Date().getFullYear();
 
-const lista = $("#lista-posts");
-const form = $("#post-form");
-const contenido = $("#contenido");
-const heroBg = $("#hero-bg");
-const dots = $("#dots");
+  document.addEventListener("DOMContentLoaded", () => {
 
-const LS = {
-  get(k, f) {
-    try {
-      return JSON.parse(localStorage.getItem(k)) ?? f;
-    } catch {
-      return f;
+    // HERO
+    const IMAGENES = [
+      "https://i.postimg.cc/wvLZ6S6N/Chat-GPT-Image-18-ago-2025-20-45-44.png",
+      "https://i.postimg.cc/DyDnC3YQ/Chat-GPT-Image-18-ago-2025-19-44-53.png",
+      "https://i.postimg.cc/FF6nJr64/Chat-GPT-Image-18-ago-2025-20-26-46.png"
+    ];
+    const heroBg = document.getElementById("hero-bg");
+    const dotsContainer = document.getElementById("dots");
+    let idx = 0;
+
+    function updateHero(){
+      heroBg.style.backgroundImage = `url(${IMAGENES[idx]})`;
+      dotsContainer.querySelectorAll(".dot").forEach((d,i)=>d.classList.toggle("active",i===idx));
     }
-  },
-  set(k, v) {
-    try {
-      localStorage.setItem(k, JSON.stringify(v));
-    } catch {}
-  }
-};
-
-let posts = LS.get("foro-posts", []);
-let idx = 0;
-
-// Renderiza las publicaciones
-function renderPosts() {
-  if (!posts.length) {
-    lista.innerHTML = `
-      <div class="card" style="text-align:center;color:var(--muted)">
-        Aún no hay publicaciones.
-      </div>`;
-    return;
-  }
-
-  lista.innerHTML = posts.map(p => `
-    <article class="post">
-      <div class="post-head">
-        <div class="post-meta">
-          <div class="avatar">${p.iniciales}</div>
-          <div>
-            <div class="post-author">${p.autor}</div>
-            <div class="post-time">${new Date(p.fecha).toLocaleString('es-ES')}</div>
-          </div>
-        </div>
-      </div>
-      <div class="post-content">${p.texto}</div>
-    </article>
-  `).join("");
-}
-
-// Manejo del formulario
-form.addEventListener("submit", e => {
-  e.preventDefault();
-  const txt = contenido.value.trim();
-  if (!txt) return;
-
-  const autor = autorNombre || "Anónimo";
-  const iniciales = autor.slice(0, 2).toUpperCase();
-  const nuevo = {
-    autor,
-    iniciales,
-    texto: txt,
-    fecha: new Date().toISOString()
-  };
-
-  posts = [nuevo, ...posts];
-  LS.set("foro-posts", posts);
-  contenido.value = "";
-  renderPosts();
-});
-
-// Actualiza el fondo del hero
-function updateHero() {
-  heroBg.style.backgroundImage = `url(${IMAGENES[idx]})`;
-  $$(".dot").forEach((d, i) => d.classList.toggle("active", i === idx));
-}
-
-// Renderiza los puntos de navegación
-function renderDots() {
-  dots.innerHTML = IMAGENES.map((_, i) =>
-    `<span class="dot${i === idx ? ' active' : ''}" data-i="${i}"></span>`
-  ).join("");
-
-  dots.addEventListener("click", e => {
-    const el = e.target.closest(".dot");
-    if (!el) return;
-    idx = +el.dataset.i;
+    function renderDots(){
+      dotsContainer.innerHTML = IMAGENES.map((_,i)=>`<span class="dot${i===idx?' active':''}" data-i="${i}"></span>`).join('');
+      dotsContainer.addEventListener("click", e=>{
+        const el = e.target.closest(".dot"); if(!el) return;
+        idx = +el.dataset.i;
+        updateHero();
+      });
+    }
+    renderDots();
     updateHero();
-  });
-}
+    setInterval(()=>{ idx=(idx+1)%IMAGENES.length; updateHero(); },5000);
 
-// Rotación automática de imágenes del hero
-setInterval(() => {
-  idx = (idx + 1) % IMAGENES.length;
-  updateHero();
-}, 5000);
+    // MODO OSCURO
+    const themeToggle = document.getElementById("theme-toggle");
+    if(themeToggle){
+      const body = document.body;
+      if(localStorage.getItem("dark-mode")==="true") body.classList.add("dark-mode");
+      themeToggle.setAttribute("aria-pressed", body.classList.contains("dark-mode"));
+      themeToggle.addEventListener("click", ()=>{
+        body.classList.toggle("dark-mode");
+        const pressed = body.classList.contains("dark-mode");
+        localStorage.setItem("dark-mode", pressed);
+        themeToggle.setAttribute("aria-pressed", pressed);
+      });
+    }
 
-// Inicialización
-renderDots();
-updateHero();
-renderPosts();
-$("#anio").textContent = new Date().getFullYear();
-
-// Sidebar toggle solo si es admin
-if (typeof esAdmin !== "undefined" && esAdmin) {
+    // SCROLL INFO
+    const infoSection = document.querySelector(".info-institucion");
+    if(infoSection){
+      window.addEventListener("scroll", ()=>{
+        const rect = infoSection.getBoundingClientRect();
+        if(rect.top < window.innerHeight-100) infoSection.classList.add("visible");
+      });
+    }
+    // SIDEBAR ADMIN
+const esAdmin = document.getElementById("sidebar") !== null; // detecta si hay sidebar
+if(esAdmin){
   const hamburger = document.getElementById("hamburger");
   const sidebar = document.getElementById("sidebar");
   const overlay = document.getElementById("overlay");
 
-  if (hamburger && sidebar && overlay) {
-    hamburger.addEventListener("click", () => {
+  if(hamburger && sidebar && overlay){
+    // Abrir sidebar
+    hamburger.addEventListener("click", ()=>{
       sidebar.classList.add("active");
       overlay.classList.add("active");
     });
 
-    overlay.addEventListener("click", () => {
+    // Cerrar sidebar al click en overlay
+    overlay.addEventListener("click", ()=>{
       sidebar.classList.remove("active");
       overlay.classList.remove("active");
     });
   }
 }
+
+
+  });

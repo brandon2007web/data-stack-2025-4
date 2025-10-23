@@ -1,119 +1,140 @@
-body {
-  display: flex;
-  justify-content: center; 
-  align-items: center;     /* centro vertical */
-  min-height: 100vh;
-  background-image: url('https://i.postimg.cc/PxFGH7Ky/fondo.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  font-family: Arial, sans-serif;
-}
+ :root {
+            --primary: #357ABD;
+            --primary-dark: #2b5f91;
+            --secondary: #4A90E2;
+            --light-bg: #f5f7fa;
+            --text-dark: #333;
+            --text-light: #777;
+        }
 
-.logo {
-  display: block;
-  margin: 0 auto 1.5rem auto;
-  height: 100px;
-}
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--light-bg);
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+        }
 
-.login-form {
-  background: #fff;
-  padding: 4rem;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-  width: 90%;
-  max-width: 550px;
-  min-height: 500px;  /* altura mínima */
-  box-sizing: border-box;
-}
+        main {
+            max-width: 1200px;
+            margin: 100px auto 50px;
+            padding: 0 1rem;
+        }
 
-.login-form label {
-  display: block;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
+        h1 {
+            text-align: center;
+            color: var(--primary-dark);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
 
+        p.subtitle {
+            text-align: center;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
 
-.login-form div {
-  display: block;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
+        /* Estadísticas rápidas */
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
 
+        .stat-card {
+            flex: 1 1 250px;
+            background: white;
+            border-radius: 14px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
 
-.login-form input,
-.login-form select {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 1rem;
-  background-color: white;
-  box-sizing: border-box;
-  appearance: none; /* Oculta el estilo nativo de la flecha */
-  background-image: url("data:image/svg+xml;utf8,<svg fill='%23999' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 20px;
-}
-.codigo-verificacion-group{
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 1rem;
-  background-color: white;
-  box-sizing: border-box;
-  appearance: none; /* Oculta el estilo nativo de la flecha */
-  background-image: url("data:image/svg+xml;utf8,<svg fill='%23999' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 20px;
-  margin-bottom: 10px;
-}
+        .stat-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
 
-/* Asegura que el option se vea bien (opcional) */
-.login-form select option {
-  font-size: 1rem;
-  padding: 0.5rem;
-}
+        .stat-card i {
+            font-size: 2.8rem;
+            color: var(--secondary);
+        }
 
+        .stat-info {
+            text-align: right;
+        }
 
-.login-form .btn {
-  margin-top: 1rem;
-  width: 95%;
-  padding: 0.5rem;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin: 0 auto;
-  display: block;
-  text-align: center;
-  text-decoration: none;
-}
+        .stat-info h3 {
+            margin: 0;
+            font-size: 1.6rem;
+            color: var(--primary-dark);
+        }
 
-.login-form .btn:hover {
-  background: #0056b3;
-}
+        .stat-info p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
 
-.forgot-password, .register-link {
-  text-align: center;
-  margin-top: 1rem;
-}
+        /* Secciones del panel */
+        .dashboard-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 1.5rem;
+        }
 
-.forgot-password a, .register-link a {
-  color: #007bff;
-  text-decoration: none;
-  font-size: 0.9rem;
-}
+        .dashboard-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 14px;
+            padding: 2rem 1rem;
+            text-decoration: none;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
 
-.forgot-password a:hover, .register-link a:hover {
-  text-decoration: underline;
-}
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
+        .dashboard-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 8px 22px rgba(0,0,0,0.2);
+        }
+
+        .dashboard-card i {
+            font-size: 2.8rem;
+            margin-bottom: 0.7rem;
+        }
+
+        .dashboard-card span {
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.3px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 1rem;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            .stat-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.8rem;
+            }
+            .stat-info {
+                text-align: center;
+            }
+          }

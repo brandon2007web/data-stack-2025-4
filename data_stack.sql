@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 07-10-2025 a las 01:45:58
+-- Tiempo de generación: 21-10-2025 a las 13:39:20
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -17,6 +17,278 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
+--
+-- Base de datos: `base de datos`
+--
+CREATE DATABASE IF NOT EXISTS `base de datos` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `base de datos`;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `asignatura`
+--
+
+CREATE TABLE `asignatura` (
+  `ID_Asignatura` int(11) NOT NULL,
+  `Nombre` varchar(150) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `codigosacceso`
+--
+
+CREATE TABLE `codigosacceso` (
+  `Codigo` varchar(100) NOT NULL,
+  `Rol` enum('administrador','profesor','auxiliar') NOT NULL,
+  `Descripcion` varchar(255) DEFAULT NULL,
+  `Vigente` tinyint(1) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `codigosacceso`
+--
+
+INSERT INTO `codigosacceso` (`Codigo`, `Rol`, `Descripcion`, `Vigente`) VALUES
+('ADM123SECRET', 'administrador', 'Código para crear usuarios administradores', 1),
+('AUX789SECRET', 'auxiliar', 'Código para crear usuarios auxiliares', 1),
+('PROF456SECRET', 'profesor', 'Código para crear usuarios profesores', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `curso`
+--
+
+CREATE TABLE `curso` (
+  `ID_Curso` int(10) UNSIGNED NOT NULL,
+  `Nombre` varchar(100) NOT NULL,
+  `Año` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `curso_tiene_asignaturas`
+--
+
+CREATE TABLE `curso_tiene_asignaturas` (
+  `ID_Curso_Tiene_Asignaturas` int(11) NOT NULL,
+  `ID_Asignatura` int(11) NOT NULL,
+  `ID_Curso` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `docente`
+--
+
+CREATE TABLE `docente` (
+  `ID_Docente` int(11) NOT NULL,
+  `Cedula` varchar(150) DEFAULT NULL,
+  `ID_Grupo` varchar(60) DEFAULT NULL,
+  `ID_Usuario` varchar(50) DEFAULT NULL,
+  `ID_Asignatura` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `grupo`
+--
+
+CREATE TABLE `grupo` (
+  `ID_Grupo` varchar(60) NOT NULL,
+  `Nombre` varchar(120) DEFAULT NULL,
+  `Turno` varchar(120) DEFAULT NULL,
+  `ID_Horario` varchar(120) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `horario`
+--
+
+CREATE TABLE `horario` (
+  `ID_Horario` varchar(50) NOT NULL,
+  `Dia_Semana` varchar(50) DEFAULT NULL,
+  `Hora_Inicio` date DEFAULT NULL,
+  `Hora_Fin` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `rol`
+--
+
+CREATE TABLE `rol` (
+  `ID_Rol` varchar(50) NOT NULL,
+  `Nombre_Rol` varchar(100) DEFAULT NULL,
+  `ID_Tipo_Rol` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipo_de_rol`
+--
+
+CREATE TABLE `tipo_de_rol` (
+  `ID_Tipo_Rol` varchar(50) NOT NULL,
+  `Nombre_Tipo_Rol` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuario`
+--
+
+CREATE TABLE `usuario` (
+  `ID_Usuario` varchar(50) NOT NULL,
+  `Nombre` varchar(100) DEFAULT NULL,
+  `Apellido` varchar(100) DEFAULT NULL,
+  `Password` varchar(255) NOT NULL,
+  `Correo` varchar(100) NOT NULL,
+  `Fecha_Creacion` date DEFAULT NULL,
+  `Ultima_Conexion` date DEFAULT NULL,
+  `ID_Rol` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `asignatura`
+--
+ALTER TABLE `asignatura`
+  ADD PRIMARY KEY (`ID_Asignatura`);
+
+--
+-- Indices de la tabla `codigosacceso`
+--
+ALTER TABLE `codigosacceso`
+  ADD PRIMARY KEY (`Codigo`);
+
+--
+-- Indices de la tabla `curso`
+--
+ALTER TABLE `curso`
+  ADD PRIMARY KEY (`ID_Curso`);
+
+--
+-- Indices de la tabla `curso_tiene_asignaturas`
+--
+ALTER TABLE `curso_tiene_asignaturas`
+  ADD PRIMARY KEY (`ID_Curso_Tiene_Asignaturas`),
+  ADD KEY `ID_Asignatura` (`ID_Asignatura`),
+  ADD KEY `ID_Curso` (`ID_Curso`);
+
+--
+-- Indices de la tabla `docente`
+--
+ALTER TABLE `docente`
+  ADD PRIMARY KEY (`ID_Docente`),
+  ADD KEY `ID_Grupo` (`ID_Grupo`),
+  ADD KEY `ID_Usuario` (`ID_Usuario`),
+  ADD KEY `ID_Asignatura` (`ID_Asignatura`);
+
+--
+-- Indices de la tabla `grupo`
+--
+ALTER TABLE `grupo`
+  ADD PRIMARY KEY (`ID_Grupo`),
+  ADD KEY `ID_Horario` (`ID_Horario`);
+
+--
+-- Indices de la tabla `horario`
+--
+ALTER TABLE `horario`
+  ADD PRIMARY KEY (`ID_Horario`);
+
+--
+-- Indices de la tabla `rol`
+--
+ALTER TABLE `rol`
+  ADD PRIMARY KEY (`ID_Rol`),
+  ADD KEY `ID_Tipo_Rol` (`ID_Tipo_Rol`);
+
+--
+-- Indices de la tabla `tipo_de_rol`
+--
+ALTER TABLE `tipo_de_rol`
+  ADD PRIMARY KEY (`ID_Tipo_Rol`);
+
+--
+-- Indices de la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  ADD PRIMARY KEY (`ID_Usuario`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `asignatura`
+--
+ALTER TABLE `asignatura`
+  MODIFY `ID_Asignatura` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `curso`
+--
+ALTER TABLE `curso`
+  MODIFY `ID_Curso` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `curso_tiene_asignaturas`
+--
+ALTER TABLE `curso_tiene_asignaturas`
+  MODIFY `ID_Curso_Tiene_Asignaturas` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `docente`
+--
+ALTER TABLE `docente`
+  MODIFY `ID_Docente` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `curso_tiene_asignaturas`
+--
+ALTER TABLE `curso_tiene_asignaturas`
+  ADD CONSTRAINT `curso_tiene_asignaturas_ibfk_1` FOREIGN KEY (`ID_Asignatura`) REFERENCES `asignatura` (`ID_Asignatura`),
+  ADD CONSTRAINT `curso_tiene_asignaturas_ibfk_2` FOREIGN KEY (`ID_Curso`) REFERENCES `curso` (`ID_Curso`);
+
+--
+-- Filtros para la tabla `docente`
+--
+ALTER TABLE `docente`
+  ADD CONSTRAINT `docente_ibfk_1` FOREIGN KEY (`ID_Grupo`) REFERENCES `grupo` (`ID_Grupo`),
+  ADD CONSTRAINT `docente_ibfk_2` FOREIGN KEY (`ID_Usuario`) REFERENCES `usuario` (`ID_Usuario`),
+  ADD CONSTRAINT `docente_ibfk_3` FOREIGN KEY (`ID_Asignatura`) REFERENCES `asignatura` (`ID_Asignatura`);
+
+--
+-- Filtros para la tabla `grupo`
+--
+ALTER TABLE `grupo`
+  ADD CONSTRAINT `grupo_ibfk_1` FOREIGN KEY (`ID_Horario`) REFERENCES `horario` (`ID_Horario`);
+
+--
+-- Filtros para la tabla `rol`
+--
+ALTER TABLE `rol`
+  ADD CONSTRAINT `rol_ibfk_1` FOREIGN KEY (`ID_Tipo_Rol`) REFERENCES `tipo_de_rol` (`ID_Tipo_Rol`);
 --
 -- Base de datos: `data_stack`
 --
@@ -78,6 +350,25 @@ INSERT INTO `asignatura` (`ID_Asignatura`, `Nombre`) VALUES
 (10, 'Física'),
 (11, 'Emprendurismo y Gestión'),
 (12, 'Proyecto');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `aulas`
+--
+
+CREATE TABLE `aulas` (
+  `ID_Aula` int(11) NOT NULL,
+  `Nombre` varchar(100) NOT NULL,
+  `ID_Piso` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `aulas`
+--
+
+INSERT INTO `aulas` (`ID_Aula`, `Nombre`, `ID_Piso`) VALUES
+(1, 'Aula 1', 1);
 
 -- --------------------------------------------------------
 
@@ -206,20 +497,6 @@ INSERT INTO `docente_grupo` (`ID_Usuario`, `ID_Grupo`, `ID_Asignatura`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `espacio`
---
-
-CREATE TABLE `espacio` (
-  `ID_Espacio` int(11) NOT NULL,
-  `Nombre` varchar(50) DEFAULT NULL,
-  `Capacidad` int(11) DEFAULT NULL,
-  `Ubicacion` varchar(100) DEFAULT NULL,
-  `ID_Tipo_Espacio` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `evento`
 --
 
@@ -332,6 +609,28 @@ INSERT INTO `horario_detalle` (`ID_Detalle`, `ID_Horario`, `ID_Dia`, `ID_Hora`, 
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `horario_marcado`
+--
+
+CREATE TABLE `horario_marcado` (
+  `id` int(11) NOT NULL,
+  `id_grupo` int(11) NOT NULL,
+  `id_dia` int(11) NOT NULL,
+  `id_hora` int(11) NOT NULL,
+  `estado` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `horario_marcado`
+--
+
+INSERT INTO `horario_marcado` (`id`, `id_grupo`, `id_dia`, `id_hora`, `estado`) VALUES
+(1, 5, 1, 2, 1),
+(2, 5, 2, 2, 1);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `horas`
 --
 
@@ -370,6 +669,26 @@ CREATE TABLE `permisos` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `pisos`
+--
+
+CREATE TABLE `pisos` (
+  `ID_Piso` int(11) NOT NULL,
+  `Nombre_Piso` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `pisos`
+--
+
+INSERT INTO `pisos` (`ID_Piso`, `Nombre_Piso`) VALUES
+(2, 'Piso 1'),
+(3, 'Piso 2'),
+(1, 'Planta Baja');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `recursos`
 --
 
@@ -382,6 +701,13 @@ CREATE TABLE `recursos` (
   `Ultimo_Mantenimiento` date DEFAULT NULL,
   `ID_Tipo_Recurso` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `recursos`
+--
+
+INSERT INTO `recursos` (`ID_Recurso`, `Nombre`, `Ubicacion`, `Estado`, `Descripcion`, `Ultimo_Mantenimiento`, `ID_Tipo_Recurso`) VALUES
+(12, 'mateo', 'Aula 1', 'Disponible', 'hola', '2025-10-21', 6);
 
 -- --------------------------------------------------------
 
@@ -411,9 +737,19 @@ CREATE TABLE `reserva` (
   `Estado` varchar(50) NOT NULL,
   `Descripcion_Motivo` text DEFAULT NULL,
   `ID_Usuario` int(11) DEFAULT NULL,
-  `ID_Espacio` int(11) DEFAULT NULL,
-  `ID_Recurso` int(11) DEFAULT NULL
+  `ID_Aulas` int(11) NOT NULL,
+  `ID_Recurso` int(11) DEFAULT NULL,
+  `Fecha_Inicio` datetime NOT NULL,
+  `Fecha_Fin` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `reserva`
+--
+
+INSERT INTO `reserva` (`ID_Reserva`, `Fecha_Creada`, `Hora_Inicio`, `Estado`, `Descripcion_Motivo`, `ID_Usuario`, `ID_Aulas`, `ID_Recurso`, `Fecha_Inicio`, `Fecha_Fin`) VALUES
+(8, '2025-10-21 08:30:48', '08:30:00', 'Pendiente', 'hola', 11, 1, 12, '2025-10-21 00:00:00', '2025-10-21 00:00:00'),
+(9, '2025-10-21 08:37:47', '08:30:00', 'Pendiente', 'hola', 11, 1, 12, '2025-10-21 00:00:00', '2025-10-21 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -506,17 +842,6 @@ INSERT INTO `tipo_de_rol` (`ID_Tipo_Rol`, `Nombre_Tipo_Rol`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `tipo_espacio`
---
-
-CREATE TABLE `tipo_espacio` (
-  `ID_Tipo_Espacio` int(11) NOT NULL,
-  `Nombre_Tipo` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `tipo_recursos`
 --
 
@@ -524,6 +849,18 @@ CREATE TABLE `tipo_recursos` (
   `ID_Tipo_Recurso` int(11) NOT NULL,
   `Nombre_Tipo_Recurso` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_recursos`
+--
+
+INSERT INTO `tipo_recursos` (`ID_Tipo_Recurso`, `Nombre_Tipo_Recurso`) VALUES
+(1, 'Equipamiento Informático'),
+(2, 'Equipamiento Audiovisual'),
+(3, 'Mobiliario'),
+(4, 'Material de Laboratorio'),
+(5, 'Herramientas/Taller'),
+(6, 'Biblioteca');
 
 -- --------------------------------------------------------
 
@@ -547,10 +884,6 @@ CREATE TABLE `usuario` (
 
 INSERT INTO `usuario` (`ID_Usuario`, `Nombre`, `Documento`, `Apellido`, `Correo`, `Contrasena`, `ID_Rol`) VALUES
 (11, 'Damian', 56567557, 'Luberiaga', 'damian@gmail.com', '$2y$10$GG./mXps9wQ.6AcAblo81e2B09lRHNo8j7giAgBVAfeSQilhvGHj2', 1),
-(18, 'Juan', 56567554, 'Perez', 'damianluberiaga5656@gmail.com', '$2y$10$HohdghfTMnrK2nT9VprPcuTQIMQbIh8l7/HVIc/NFz1phIIqdbbX2', 2),
-(19, 'Juan', 56567557, 'Perez', 'damianluberiaga5656@gmail.com', '$2y$10$EOSbjf1nW43dpUzoB29W5OVPf4AXmu3gz9K3qVpxeBBj.cQk2ys9e', 2),
-(20, 'Juan', 56567557, 'Perez', 'damianluberiaga5656@gmail.com', '$2y$10$V5W65qmpiNOPFntGZ8Uq..bF9EzpO.L8s2iuiVx3kKQQXn3g81gXS', 2),
-(21, 'Juan', 56567557, 'Perez', 'damianluberiaga5656@gmail.com', '$2y$10$W18imCLSVQc1Ayb1yx/kwuP8K4StfnE1SwhOFbTYQ8jnYhN5e2WQe', 2),
 (22, 'santino', 60690972, 'calderon', 'santinopro60662@gmail.com', '$2y$10$AnTXVtLCRKv7v.Z11KhY1umGFodTiIa9n3UAU2wGLg9Y02w/bzh76', 2);
 
 --
@@ -578,6 +911,14 @@ ALTER TABLE `alumno`
 --
 ALTER TABLE `asignatura`
   ADD PRIMARY KEY (`ID_Asignatura`);
+
+--
+-- Indices de la tabla `aulas`
+--
+ALTER TABLE `aulas`
+  ADD PRIMARY KEY (`ID_Aula`),
+  ADD UNIQUE KEY `Nombre` (`Nombre`),
+  ADD KEY `ID_Piso` (`ID_Piso`);
 
 --
 -- Indices de la tabla `codigos_admin`
@@ -619,13 +960,6 @@ ALTER TABLE `docente_grupo`
   ADD PRIMARY KEY (`ID_Usuario`,`ID_Grupo`,`ID_Asignatura`),
   ADD KEY `ID_Grupo` (`ID_Grupo`),
   ADD KEY `ID_Asignatura` (`ID_Asignatura`);
-
---
--- Indices de la tabla `espacio`
---
-ALTER TABLE `espacio`
-  ADD PRIMARY KEY (`ID_Espacio`),
-  ADD KEY `ID_Tipo_Espacio` (`ID_Tipo_Espacio`);
 
 --
 -- Indices de la tabla `evento`
@@ -677,6 +1011,13 @@ ALTER TABLE `horario_detalle`
   ADD KEY `ID_Grupo` (`ID_Grupo`);
 
 --
+-- Indices de la tabla `horario_marcado`
+--
+ALTER TABLE `horario_marcado`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_horario` (`id_grupo`,`id_dia`,`id_hora`);
+
+--
 -- Indices de la tabla `horas`
 --
 ALTER TABLE `horas`
@@ -688,6 +1029,13 @@ ALTER TABLE `horas`
 ALTER TABLE `permisos`
   ADD PRIMARY KEY (`ID_Permiso`),
   ADD KEY `ID_Rol` (`ID_Rol`);
+
+--
+-- Indices de la tabla `pisos`
+--
+ALTER TABLE `pisos`
+  ADD PRIMARY KEY (`ID_Piso`),
+  ADD UNIQUE KEY `Nombre_Piso` (`Nombre_Piso`);
 
 --
 -- Indices de la tabla `recursos`
@@ -710,7 +1058,6 @@ ALTER TABLE `reporte`
 ALTER TABLE `reserva`
   ADD PRIMARY KEY (`ID_Reserva`),
   ADD KEY `ID_Usuario` (`ID_Usuario`),
-  ADD KEY `ID_Espacio` (`ID_Espacio`),
   ADD KEY `ID_Recurso` (`ID_Recurso`);
 
 --
@@ -743,12 +1090,6 @@ ALTER TABLE `tipo_de_reporte`
 --
 ALTER TABLE `tipo_de_rol`
   ADD PRIMARY KEY (`ID_Tipo_Rol`);
-
---
--- Indices de la tabla `tipo_espacio`
---
-ALTER TABLE `tipo_espacio`
-  ADD PRIMARY KEY (`ID_Tipo_Espacio`);
 
 --
 -- Indices de la tabla `tipo_recursos`
@@ -786,6 +1127,12 @@ ALTER TABLE `asignatura`
   MODIFY `ID_Asignatura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
+-- AUTO_INCREMENT de la tabla `aulas`
+--
+ALTER TABLE `aulas`
+  MODIFY `ID_Aula` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT de la tabla `codigos_admin`
 --
 ALTER TABLE `codigos_admin`
@@ -802,12 +1149,6 @@ ALTER TABLE `curso`
 --
 ALTER TABLE `docente`
   MODIFY `ID_Docente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT de la tabla `espacio`
---
-ALTER TABLE `espacio`
-  MODIFY `ID_Espacio` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `grupo`
@@ -840,6 +1181,12 @@ ALTER TABLE `horario_detalle`
   MODIFY `ID_Detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT de la tabla `horario_marcado`
+--
+ALTER TABLE `horario_marcado`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
 -- AUTO_INCREMENT de la tabla `horas`
 --
 ALTER TABLE `horas`
@@ -852,10 +1199,16 @@ ALTER TABLE `permisos`
   MODIFY `ID_Permiso` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `pisos`
+--
+ALTER TABLE `pisos`
+  MODIFY `ID_Piso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT de la tabla `recursos`
 --
 ALTER TABLE `recursos`
-  MODIFY `ID_Recurso` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Recurso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `reporte`
@@ -867,7 +1220,7 @@ ALTER TABLE `reporte`
 -- AUTO_INCREMENT de la tabla `reserva`
 --
 ALTER TABLE `reserva`
-  MODIFY `ID_Reserva` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Reserva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
@@ -894,16 +1247,10 @@ ALTER TABLE `tipo_de_rol`
   MODIFY `ID_Tipo_Rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT de la tabla `tipo_espacio`
---
-ALTER TABLE `tipo_espacio`
-  MODIFY `ID_Tipo_Espacio` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT de la tabla `tipo_recursos`
 --
 ALTER TABLE `tipo_recursos`
-  MODIFY `ID_Tipo_Recurso` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Tipo_Recurso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
@@ -930,6 +1277,12 @@ ALTER TABLE `alumno`
   ADD CONSTRAINT `alumno_ibfk_2` FOREIGN KEY (`ID_Usuario`) REFERENCES `usuario` (`ID_Usuario`);
 
 --
+-- Filtros para la tabla `aulas`
+--
+ALTER TABLE `aulas`
+  ADD CONSTRAINT `aulas_ibfk_1` FOREIGN KEY (`ID_Piso`) REFERENCES `pisos` (`ID_Piso`) ON UPDATE CASCADE;
+
+--
 -- Filtros para la tabla `curso_tiene_asignaturas`
 --
 ALTER TABLE `curso_tiene_asignaturas`
@@ -950,12 +1303,6 @@ ALTER TABLE `docente_grupo`
   ADD CONSTRAINT `docente_grupo_ibfk_1` FOREIGN KEY (`ID_Usuario`) REFERENCES `usuario` (`ID_Usuario`) ON DELETE CASCADE,
   ADD CONSTRAINT `docente_grupo_ibfk_2` FOREIGN KEY (`ID_Grupo`) REFERENCES `grupo` (`ID_Grupo`) ON DELETE CASCADE,
   ADD CONSTRAINT `docente_grupo_ibfk_3` FOREIGN KEY (`ID_Asignatura`) REFERENCES `asignatura` (`ID_Asignatura`) ON DELETE CASCADE;
-
---
--- Filtros para la tabla `espacio`
---
-ALTER TABLE `espacio`
-  ADD CONSTRAINT `espacio_ibfk_1` FOREIGN KEY (`ID_Tipo_Espacio`) REFERENCES `tipo_espacio` (`ID_Tipo_Espacio`);
 
 --
 -- Filtros para la tabla `evento`
@@ -1020,7 +1367,6 @@ ALTER TABLE `reporte`
 --
 ALTER TABLE `reserva`
   ADD CONSTRAINT `reserva_ibfk_1` FOREIGN KEY (`ID_Usuario`) REFERENCES `usuario` (`ID_Usuario`),
-  ADD CONSTRAINT `reserva_ibfk_2` FOREIGN KEY (`ID_Espacio`) REFERENCES `espacio` (`ID_Espacio`),
   ADD CONSTRAINT `reserva_ibfk_3` FOREIGN KEY (`ID_Recurso`) REFERENCES `recursos` (`ID_Recurso`);
 
 --
@@ -1115,6 +1461,13 @@ CREATE TABLE `pma__export_templates` (
   `template_data` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Saved export templates';
 
+--
+-- Volcado de datos para la tabla `pma__export_templates`
+--
+
+INSERT INTO `pma__export_templates` (`id`, `username`, `export_type`, `template_name`, `template_data`) VALUES
+(1, 'root', 'database', 'proyecto', '{\"quick_or_custom\":\"quick\",\"what\":\"sql\",\"structure_or_data_forced\":\"0\",\"table_select[]\":[\"adscripto\",\"alumno\",\"asignatura\",\"codigosacceso\",\"curso\",\"grupo\",\"horario\",\"rol\",\"tipo_de_rol\",\"usuario\"],\"table_structure[]\":[\"adscripto\",\"alumno\",\"asignatura\",\"codigosacceso\",\"curso\",\"grupo\",\"horario\",\"rol\",\"tipo_de_rol\",\"usuario\"],\"table_data[]\":[\"adscripto\",\"alumno\",\"asignatura\",\"codigosacceso\",\"curso\",\"grupo\",\"horario\",\"rol\",\"tipo_de_rol\",\"usuario\"],\"aliases_new\":\"\",\"output_format\":\"sendit\",\"filename_template\":\"@DATABASE@\",\"remember_template\":\"on\",\"charset\":\"utf-8\",\"compression\":\"none\",\"maxsize\":\"\",\"codegen_structure_or_data\":\"data\",\"codegen_format\":\"0\",\"csv_separator\":\",\",\"csv_enclosed\":\"\\\"\",\"csv_escaped\":\"\\\"\",\"csv_terminated\":\"AUTO\",\"csv_null\":\"NULL\",\"csv_columns\":\"something\",\"csv_structure_or_data\":\"data\",\"excel_null\":\"NULL\",\"excel_columns\":\"something\",\"excel_edition\":\"win\",\"excel_structure_or_data\":\"data\",\"json_structure_or_data\":\"data\",\"json_unicode\":\"something\",\"latex_caption\":\"something\",\"latex_structure_or_data\":\"structure_and_data\",\"latex_structure_caption\":\"Estructura de la tabla @TABLE@\",\"latex_structure_continued_caption\":\"Estructura de la tabla @TABLE@ (continúa)\",\"latex_structure_label\":\"tab:@TABLE@-structure\",\"latex_relation\":\"something\",\"latex_comments\":\"something\",\"latex_mime\":\"something\",\"latex_columns\":\"something\",\"latex_data_caption\":\"Contenido de la tabla @TABLE@\",\"latex_data_continued_caption\":\"Contenido de la tabla @TABLE@ (continúa)\",\"latex_data_label\":\"tab:@TABLE@-data\",\"latex_null\":\"\\\\textit{NULL}\",\"mediawiki_structure_or_data\":\"structure_and_data\",\"mediawiki_caption\":\"something\",\"mediawiki_headers\":\"something\",\"htmlword_structure_or_data\":\"structure_and_data\",\"htmlword_null\":\"NULL\",\"ods_null\":\"NULL\",\"ods_structure_or_data\":\"data\",\"odt_structure_or_data\":\"structure_and_data\",\"odt_relation\":\"something\",\"odt_comments\":\"something\",\"odt_mime\":\"something\",\"odt_columns\":\"something\",\"odt_null\":\"NULL\",\"pdf_report_title\":\"\",\"pdf_structure_or_data\":\"structure_and_data\",\"phparray_structure_or_data\":\"data\",\"sql_include_comments\":\"something\",\"sql_header_comment\":\"\",\"sql_use_transaction\":\"something\",\"sql_compatibility\":\"NONE\",\"sql_structure_or_data\":\"structure_and_data\",\"sql_create_table\":\"something\",\"sql_auto_increment\":\"something\",\"sql_create_view\":\"something\",\"sql_procedure_function\":\"something\",\"sql_create_trigger\":\"something\",\"sql_backquotes\":\"something\",\"sql_type\":\"INSERT\",\"sql_insert_syntax\":\"both\",\"sql_max_query_size\":\"50000\",\"sql_hex_for_binary\":\"something\",\"sql_utc_time\":\"something\",\"texytext_structure_or_data\":\"structure_and_data\",\"texytext_null\":\"NULL\",\"xml_structure_or_data\":\"data\",\"xml_export_events\":\"something\",\"xml_export_functions\":\"something\",\"xml_export_procedures\":\"something\",\"xml_export_tables\":\"something\",\"xml_export_triggers\":\"something\",\"xml_export_views\":\"something\",\"xml_export_contents\":\"something\",\"yaml_structure_or_data\":\"data\",\"\":null,\"lock_tables\":null,\"as_separate_files\":null,\"csv_removeCRLF\":null,\"excel_removeCRLF\":null,\"json_pretty_print\":null,\"htmlword_columns\":null,\"ods_columns\":null,\"sql_dates\":null,\"sql_relation\":null,\"sql_mime\":null,\"sql_disable_fk\":null,\"sql_views_as_tables\":null,\"sql_metadata\":null,\"sql_create_database\":null,\"sql_drop_table\":null,\"sql_if_not_exists\":null,\"sql_simple_view_export\":null,\"sql_view_current_user\":null,\"sql_or_replace_view\":null,\"sql_truncate\":null,\"sql_delayed\":null,\"sql_ignore\":null,\"texytext_columns\":null}');
+
 -- --------------------------------------------------------
 
 --
@@ -1177,6 +1530,13 @@ CREATE TABLE `pma__recent` (
   `username` varchar(64) NOT NULL,
   `tables` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Recently accessed tables';
+
+--
+-- Volcado de datos para la tabla `pma__recent`
+--
+
+INSERT INTO `pma__recent` (`username`, `tables`) VALUES
+('root', '[{\"db\":\"data_stack\",\"table\":\"aulas\"},{\"db\":\"data_stack\",\"table\":\"recursos\"},{\"db\":\"data_stack\",\"table\":\"reserva\"},{\"db\":\"data_stack\",\"table\":\"tipo_espacio\"},{\"db\":\"data_stack\",\"table\":\"espacio\"},{\"db\":\"INFORMATION_SCHEMA\",\"table\":\"KEY_COLUMN_USAGE\"},{\"db\":\"data_stack\",\"table\":\"tipo_recursos\"},{\"db\":\"data_stack\",\"table\":\"horario_marcado\"},{\"db\":\"data_stack\",\"table\":\"usuario\"},{\"db\":\"data_stack\",\"table\":\"rol\"}]');
 
 -- --------------------------------------------------------
 
@@ -1283,7 +1643,7 @@ CREATE TABLE `pma__userconfig` (
 --
 
 INSERT INTO `pma__userconfig` (`username`, `timevalue`, `config_data`) VALUES
-('root', '2019-10-21 13:37:09', '{\"Console\\/Mode\":\"collapse\"}');
+('root', '2025-10-21 11:39:06', '{\"Console\\/Mode\":\"collapse\",\"lang\":\"es\",\"NavigationWidth\":304}');
 
 -- --------------------------------------------------------
 
@@ -1452,7 +1812,7 @@ ALTER TABLE `pma__column_info`
 -- AUTO_INCREMENT de la tabla `pma__export_templates`
 --
 ALTER TABLE `pma__export_templates`
-  MODIFY `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `pma__history`
