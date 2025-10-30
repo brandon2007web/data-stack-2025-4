@@ -81,7 +81,7 @@ $totalUsuarios = mysqli_fetch_assoc($queryUsuarios)['total'] ?? 0;
                 <i class="fas fa-chalkboard-teacher"></i>
                 <span>Aulas</span>
             </a>
-            <a href="Views/horarios/horarios.php" class="dashboard-card">
+            <a href="Views/horarios/seleccionar_grupos.php" class="dashboard-card">
                 <i class="fas fa-calendar-alt"></i>
                 <span>Horarios</span>
             </a>

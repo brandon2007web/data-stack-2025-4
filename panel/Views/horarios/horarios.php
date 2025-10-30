@@ -2,10 +2,29 @@
 session_start();
 include __DIR__ . "../../../../conexion.php";
 
+// Comprobar login
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario'] === 'Invitado') {
     header("Location: bienvenido.php");
     exit;
 }
+
+// Comprobar si se seleccionó grupo
+if (!isset($_SESSION['grupo_id'])) {
+    header("Location: seleccionar_grupo.php");
+    exit;
+}
+
+$grupo_id = $_SESSION['grupo_id']; // lo usás más abajo
+$sql = $conn->prepare("SELECT Nombre FROM grupo WHERE ID_Grupo = ?");
+$sql->bind_param("i", $grupo_id);
+$sql->execute();
+$result = $sql->get_result();
+$nombre_grupo = "Desconocido";
+
+if ($row = $result->fetch_assoc()) {
+    $nombre_grupo = htmlspecialchars($row['Nombre']);
+}
+$sql->close();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -25,16 +44,9 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario'] === 'Invitado') {
         <label for="nombreHorario">Nombre del Horario:</label>
         <input type="text" id="nombreHorario" placeholder="Ingrese un nombre">
 
-        <label for="grupo">Grupo:</label>
-        <select id="grupo">
-            <option value="">-- Seleccione --</option>
-            <?php
-            $resGrupos = $conn->query("SELECT ID_Grupo, Nombre FROM grupo ORDER BY Nombre ASC");
-            while ($row = $resGrupos->fetch_assoc()) {
-                echo "<option value='{$row['ID_Grupo']}'>" . htmlspecialchars($row['Nombre']) . "</option>";
-            }
-            ?>
-        </select>
+        <label for="grupo">
+    <p>Grupo seleccionado: <strong><?php echo $nombre_grupo; ?></strong></p>
+</label>
 
         <label for="dia">Día:</label>
         <select id="dia">
@@ -63,6 +75,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario'] === 'Invitado') {
 
 <div class="main">
     <h1>HORARIO SEMANAL</h1>
+    
     <table id="horario">
         <thead>
             <tr>
@@ -76,13 +89,18 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario'] === 'Invitado') {
             </tr>
         </thead>
         <tbody>
-        <?php
-       include(__DIR__.'/funciones/func_horaas.php')
-        ?>
+                    <?php
+            include(__DIR__ . '/funciones/func_horaas.php');
+            // 👈 ahora se ejecuta automáticamente
+            ?>
+
         </tbody>
     </table>
     <button id="guardarBtn" style="display:none">Guardar Horario</button>
 </div>
+<script>
+    const GRUPO_ID = <?php echo json_encode($grupo_id); ?>;
+</script>
 
 <script src="lol.js"></script>
 </body>

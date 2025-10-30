@@ -32,7 +32,7 @@ $nombre = $_SESSION['nombre'] ?? 'Invitado';
         </div>
       </div>
       <nav class="main-nav">
-        <a href="../panel/Views/horarios/ver_horarios.php" class="nav-link">Ver Horarios</a>
+        <a href="../panel/Views/horarios/selec_grupos.php" class="nav-link">Ver Horarios</a>
       </nav>
       <div class="user-controls">
         <div class="avatar"><?= strtoupper(substr($nombre,0,2)) ?></div>
@@ -69,7 +69,7 @@ $nombre = $_SESSION['nombre'] ?? 'Invitado';
     <div class="container hero-content">
       <div class="hero-card">
         <h2 class="hero-title">Bienvenido/a <?= htmlspecialchars($nombre) ?></h2>
-        <p class="hero-sub">Explora recursos, anuncios y participa en la comunidad educativa.</p>
+       
         <div id="dots" class="dots"></div>
       </div>
     </div>

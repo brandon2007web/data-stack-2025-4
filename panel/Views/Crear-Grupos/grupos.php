@@ -29,7 +29,20 @@
         }
         ?>
       </select>
-
+       <label for=turno>Turno</label>
+       <select name="turno" id="turno">
+       <?php 
+        
+                $result_turno = $conn->query("SELECT ID_Turno, Nombre FROM turno");
+                if ($result_turno && $result_turno->num_rows > 0) {
+                    while ($row_turno = $result_turno->fetch_assoc()) {
+                        echo "<option value='" . $row_turno['ID_Turno'] . "'>" . $row_turno['Nombre'] . "</option>";
+                    }
+                } else {
+                    echo "<option value=''>No hay turnos cargados</option>";
+                }
+       ?>
+       </select>
       <label for="grupo">Nombre del Grupo:</label>
       <input type="text" id="grupo" name="grupo" placeholder="Ej: Grupo A" required />
 

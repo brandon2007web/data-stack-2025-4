@@ -18,18 +18,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
 
-    // === AGREGAR CURSO Y GRUPO (opcional) ===
-    elseif ($accion === "agregarCurso" || $accion === "crearGrupo") {
-        $curso = (int)$_POST["curso"];
-        $grupo = $conn->real_escape_string($_POST["grupo"]);
+ // === AGREGAR CURSO Y GRUPO (opcional) ===
+elseif ($accion === "agregarCurso" || $accion === "crearGrupo") {
+    $curso = (int)$_POST["curso"];
+    $grupo = $conn->real_escape_string($_POST["grupo"]);
+    $turno = (int)$_POST["turno"];
 
-        $sql = "INSERT INTO grupo (ID_Curso, Nombre) VALUES ($curso, '$grupo')";
-        if ($conn->query($sql)) {
-            echo "Grupo agregado con éxito";
-        } else {
-            echo "Error al crear grupo: " . $conn->error;
-        }
+    // ✅ Faltaban las comillas alrededor del valor de texto $grupo
+    $sql = "INSERT INTO grupo (ID_Curso, Nombre, ID_Turno) 
+            VALUES ($curso, '$grupo', $turno)";
+
+    if ($conn->query($sql)) {
+        echo "✅ Grupo agregado con éxito.";
+    } else {
+        echo "❌ Error al crear grupo: " . $conn->error;
     }
+}
+
 
     // === GUARDAR HORARIO COMPLETO ===
     elseif ($accion === "guardarHorario") {
