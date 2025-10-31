@@ -1,0 +1,171 @@
+/* ====== ESTILO GENERAL ====== */
+body, html {
+    background-color: #eef1f4;
+    font-family: "Poppins", sans-serif;
+    color: #2d3436;
+}
+
+.container-fluid {
+    padding: 20px 25px;
+}
+
+/* ====== TÍTULO ====== */
+.container-fluid h2 {
+    font-weight: 600;
+    font-size: 1.8rem;
+    color: #1e2a35;
+    margin-bottom: 20px;
+    border-left: 5px solid #007bff;
+    padding-left: 10px;
+}
+
+/* ====== FILA DE TARJETAS ====== */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* ====== CARDS ====== */
+.card {
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(145deg, #ffffff, #f1f3f6);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    flex: 1;
+    min-width: 220px;
+    transition: 0.3s ease all;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+}
+
+.card-body h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 5px 0;
+}
+
+.card-body p {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* Colores personalizados para cada tarjeta */
+.col-md-3:nth-child(1) .card-body h3 { color: #007bff; }
+.col-md-3:nth-child(2) .card-body h3 { color: #28a745; }
+.col-md-3:nth-child(3) .card-body h3 { color: #ffc107; }
+.col-md-3:nth-child(4) .card-body h3 { color: #6f42c1; }
+
+/* ====== TABLA ====== */
+.card.mt-4 {
+    margin-top: 50px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    background: #007bff;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 12px 15px;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 0;
+    background-color: #fff;
+}
+
+.table th {
+    background-color: #f8f9fb;
+    color: #333;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 10px;
+    border-bottom: 2px solid #e1e5eb;
+}
+
+.table td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    color: #444;
+    border-top: 1px solid #e9ecef;
+}
+
+.table tbody tr:hover {
+    background-color: #f5f9ff;
+    transition: 0.2s;
+}
+
+/* ====== BADGES ====== */
+.badge {
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.bg-success {
+    background-color: #28a745 !important;
+    color: white !important;
+}
+
+.bg-secondary {
+    background-color: #adb5bd !important;
+    color: white !important;
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 992px) {
+    .row {
+        flex-direction: column;
+    }
+
+    .card-body h3 {
+        font-size: 1.6rem;
+    }
+
+    .card-body p {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .table thead {
+        display: none;
+    }
+
+    .table tbody td {
+        display: block;
+        text-align: right;
+        position: relative;
+        padding-left: 50%;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .table tbody td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        width: 45%;
+        font-weight: 600;
+        text-align: left;
+        color: #555;
+    }
+}

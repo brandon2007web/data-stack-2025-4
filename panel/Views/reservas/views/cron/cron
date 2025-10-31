@@ -1,0 +1,7 @@
+1) crontab -e
+2)# ===================================================
+# CRON: Limpieza automática de reservas vencidas
+# Ejecuta todos los días a las 00:10 AM
+# ===================================================
+
+10 0 * * * /usr/bin/php /var/www/html/data-stack-2025-4/panel/Views/reservas/cron/limpiar_reservas.php >> /var/www/html/data-stack-2025-4/logs/limpieza.log 2>&1

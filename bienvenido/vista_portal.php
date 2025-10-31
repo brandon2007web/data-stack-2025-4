@@ -52,7 +52,7 @@ $nombre = $_SESSION['nombre'] ?? 'Invitado';
             <a href="../panel/index.php" class="sidebar-link">📊 Panel Admin</a>
             <a href="../panel/Configuracion/configuracion.php" class="sidebar-link">⚙️ Configuración</a>
         <?php elseif ($_SESSION['rol'] == 2): // Docente ?>
-            <a href="../panel/Reservas/reservas.php" class="sidebar-link">📅 Reservas</a>
+            <a href="../panel/Views/reservas/elegir_reserva.php" class="sidebar-link">📅 Reservas</a>
             <a href="../panel/Configuracion/configuracion.php" class="sidebar-link">⚙️ Configuración</a>
             <a href="../panel/Reportes/reportes.php" class="sidebar-link">📄 Reportes</a>
             <a href="../panel/Horarios/ver_horarios.php" class="sidebar-link">🕒 Horarios</a>

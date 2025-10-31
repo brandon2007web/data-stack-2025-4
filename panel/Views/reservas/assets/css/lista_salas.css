@@ -1,0 +1,139 @@
+/* ===== LISTA DE SALAS ===== */
+.container-fluid {
+    padding: 25px 30px;
+    background-color: #f4f6f9;
+    min-height: 100vh;
+}
+
+.container-fluid h2 {
+    font-weight: 600;
+    color: #0c2940;
+    margin-bottom: 25px;
+    border-left: 5px solid #007bff;
+    padding-left: 10px;
+}
+
+/* ===== Buscador ===== */
+.search-box input {
+    margin-bottom: 50px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 6px 12px;
+    transition: all 0.3s ease;
+}
+
+.search-box input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0,123,255,0.4);
+    outline: none;
+}
+.search-box {
+  margin-bottom: 30px; /* 👈 Espacio entre buscador y tabla */
+}
+.table {
+  margin-top: 20px;
+}
+
+.card.mt-4 {
+    margin-top: 50px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+/* ===== Tabla ===== */
+.table {
+    
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.card-header{
+    margin-top: 50px;
+}
+
+.table th {
+    background-color: #1273e6;
+    color: white;
+    text-align: center;
+    font-weight: 600;
+    padding: 10px;
+}
+
+.table td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 10px;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f6ff;
+    transition: 0.2s;
+}
+
+/* ===== Botones ===== */
+.btn-sm {
+    padding: 4px 8px;
+    margin: 0 2px;
+    border-radius: 6px;
+}
+
+.btn-outline-primary:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.btn-outline-warning:hover {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+/* ===== Badges ===== */
+.badge {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    border-radius: 12px;
+}
+
+.bg-success {
+    background-color: #28a745 !important;
+}
+
+.bg-pend {
+    background-color: #d1dc35 !important;
+}
+
+
+.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .table thead {
+        display: none;
+    }
+
+    .table tbody td {
+        display: block;
+        text-align: right;
+        position: relative;
+        padding-left: 50%;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .table tbody td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        width: 45%;
+        font-weight: 600;
+        text-align: left;
+    }
+}

@@ -89,7 +89,7 @@ $totalUsuarios = mysqli_fetch_assoc($queryUsuarios)['total'] ?? 0;
                 <i class="fas fa-boxes-stacked"></i>
                 <span>Recursos</span>
             </a>
-            <a href="Views/reservas/reservas.php" class="dashboard-card">
+            <a href="Views/reservas/elegir_reserva.php" class="dashboard-card">
                 <i class="fas fa-calendar-check"></i>
                 <span>Reservas</span>
             </a>

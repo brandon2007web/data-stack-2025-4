@@ -146,7 +146,7 @@ h1 {
             <div class="icon"><i class="fas fa-school"></i></div>
             <h3>Reserva de Aula</h3>
             <p>Permite reservar un aula específica para una clase, reunión o actividad. Se puede definir fecha, hora y duración.</p>
-            <a href="Reservas/crear-reserva-aula.php" class="btn-select">Reservar Aula</a>
+            <a href="reservas_salas.php" class="btn-select">Reservar Aula</a>
         </div>
 
         <!-- Reserva de Recurso -->
@@ -154,7 +154,7 @@ h1 {
             <div class="icon"><i class="fas fa-laptop"></i></div>
             <h3>Reserva de Recurso</h3>
             <p>Permite reservar equipos o materiales como proyectores, computadoras o cámaras, según disponibilidad.</p>
-            <a href="crear-reserva-recursos.php" class="btn-select">Reservar Recurso</a>
+            <a href="reservas_recursos.php" class="btn-select">Reservar Recurso</a>
         </div>
     </div>
 </div>
