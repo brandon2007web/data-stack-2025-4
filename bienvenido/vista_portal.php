@@ -24,13 +24,18 @@ $nombre = $_SESSION['nombre'] ?? 'Invitado';
         <span></span><span></span><span></span>
       </button>
       <?php endif; ?>
+       
       <div class="brand">
-        <div class="logo">D.S</div>
-        <div class="brand-text">
-          <h1>Data Stack</h1>
-          <p>Instituto Tecnológico Superior Paysandú</p>
+        <div class="imagen">
+        <img src="../Imagenes/logo-proyecto.png" id="logopro" alt="Logo del proyecto">
         </div>
-      </div>
+  <div class="logo">D.S</div>
+  <div class="brand-text">
+    <h1>Data Stack</h1>
+    <p>Instituto Tecnológico Superior Paysandú</p>
+  </div>
+</div>
+
       <nav class="main-nav">
         <a href="../panel/Views/horarios/selec_grupos.php" class="nav-link">Ver Horarios</a>
       </nav>

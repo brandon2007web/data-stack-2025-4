@@ -10,6 +10,12 @@
   --shadow: 0 8px 20px rgba(0,0,0,0.08);
   --header-height: 70px;
 }
+.imagen {
+  height: 100px;
+  width: auto;
+}
+
+
 
 body {
   margin: 0;
@@ -71,9 +77,14 @@ header {
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
-  min-width: 0;
+  gap: 10px;
+  flex-wrap: nowrap;
 }
+#logopro {
+  height: 140px;
+  width: auto;
+}
+
 .logo {
   width: 44px;
   height: 44px;
@@ -257,4 +268,9 @@ footer { margin-top:48px; border-top:1px solid var(--line); background:rgba(255,
   .main-nav { display:none; }
   header { padding:0 12px; }
   .hero-card { padding:20px; }
+}
+@media (max-width: 768px) {
+  .logo-proyecto {
+    height: 30px;
+  }
 }
